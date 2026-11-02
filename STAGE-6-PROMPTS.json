@@ -1,0 +1,360 @@
+{
+  "tool": "Built-in image generation",
+  "gatekeeper": {
+    "sprite": "Production dark fairytale hero animation sheet for The Iron-Toothed Gatekeeper, original fantasy character. Exactly4columns2rows1536x1024,eight equal384x512 cells. Same hulking anthropomorphic ancient wooden gate guardian in everycell, iron tooth portcullis mouth, iron bands, heavy living wooden arms, skull lantern on belt, ominous moss and bone details, towering tank silhouette, facingRIGHT. Row1fourwalkposes,row2four shield slam attackposes. Fullbody containedwithin eachcell15percentpadding, same scale feetbaseline. Premium hand-painted fantasy muted moss teal antique iron brass. Actual alpha TRANSPARENT background, no scenery no text.",
+    "portrait": "Premium painted dark fairytale hero portrait, The Iron-Toothed Gatekeeper: living ancient wooden gate tank guardian, humanoid shoulders made of gnarled oak, iron banded portcullis teeth mouth, glowing amber eyes, moss and skull lantern detail. Iconic readable face, antique iron and aged brass highlights, midnight teal painted background, square portrait no text. Original fantasy illustration."
+  },
+  "heroes": {
+    "crew": [
+      [
+        "colossus",
+        "Sir Barnacle, burly knight in barnacle encrusted plate armor with anchor shield"
+      ],
+      [
+        "crossbowman",
+        "adult Mermaid Harpooner, sea-green haired warrior with walking legs, scaled coat and trident"
+      ],
+      [
+        "ronin",
+        "adult Fisherman Who Wished, weathered bearded fisherman in oilskin coat with hooked spear"
+      ],
+      [
+        "druid",
+        "adult Kelp Witch, seaweed-haired druid with kelp staff and moss robe"
+      ],
+      [
+        "storm",
+        "adult Thunder Tom, storm sailor in navy coat with lightning staff"
+      ],
+      [
+        "pickpocket",
+        "adult Pearl Thief, nimble hooded diver in purple leather with pearl dagger"
+      ],
+      [
+        "engineer",
+        "elderly Lighthouse Keeper with white beard, maritime coat and brass lantern"
+      ],
+      [
+        "collector",
+        "adult Mermaid Debt Collector, stern octopus-themed sea sorcerer in dark robes with ledger"
+      ]
+    ],
+    "sprite": "Production 2D fantasy hero sprite atlas, exactly4columns8rows,1536x3072 canvas,32 equal square cells. Each row one fully clothed adult character in FOUR poses: neutral, walking step, attack windup, skill cast. All faceRIGHT, wholebody within everycell with15percent padding, fixed feet baseline, consistent costume perrow. Premium hand-painted dark fairytale maritime fantasy, teal antique brass palettes. Actual alpha TRANSPARENT background, no backdrop no text. Rows in exact top-to-bottom order: 1 Sir Barnacle, burly knight in barnacle encrusted plate armor with anchor shield; 2 adult Mermaid Harpooner, sea-green haired warrior with walking legs, scaled coat and trident; 3 adult Fisherman Who Wished, weathered bearded fisherman in oilskin coat with hooked spear; 4 adult Kelp Witch, seaweed-haired druid with kelp staff and moss robe; 5 adult Thunder Tom, storm sailor in navy coat with lightning staff; 6 adult Pearl Thief, nimble hooded diver in purple leather with pearl dagger; 7 elderly Lighthouse Keeper with white beard, maritime coat and brass lantern; 8 adult Mermaid Debt Collector, stern octopus-themed sea sorcerer in dark robes with ledger. Strong silhouettes at mobile scale.",
+    "portrait": "Premium painted dark fairytale maritime game PORTRAIT ATLAS,exactly4columns2rows,1536x768,eight equal square cells, no text. Midnight teal backdrops antique brass rimlight and clear faces. Reading order left-to-right top-to-bottom: 1 Sir Barnacle, burly knight in barnacle encrusted plate armor with anchor shield; 2 adult Mermaid Harpooner, sea-green haired warrior with walking legs, scaled coat and trident; 3 adult Fisherman Who Wished, weathered bearded fisherman in oilskin coat with hooked spear; 4 adult Kelp Witch, seaweed-haired druid with kelp staff and moss robe; 5 adult Thunder Tom, storm sailor in navy coat with lightning staff; 6 adult Pearl Thief, nimble hooded diver in purple leather with pearl dagger; 7 elderly Lighthouse Keeper with white beard, maritime coat and brass lantern; 8 adult Mermaid Debt Collector, stern octopus-themed sea sorcerer in dark robes with ledger. One fully clothed adult bustportrait percell, consistent high quality and no overlapping borders."
+  },
+  "pets": {
+    "roster": [
+      {
+        "id": "pigeon",
+        "n": "Raven Messenger",
+        "e": "🐦‍⬛",
+        "desc": "black raven with letter satchel",
+        "group": 0,
+        "row": 0
+      },
+      {
+        "id": "ratres",
+        "n": "Piper's Rat",
+        "e": "🐀",
+        "desc": "brown rat with tiny flute charm",
+        "group": 0,
+        "row": 1
+      },
+      {
+        "id": "sock",
+        "n": "Glass Slipper Sprite",
+        "e": "👠",
+        "desc": "living crystal slipper with delicate wings",
+        "group": 0,
+        "row": 2
+      },
+      {
+        "id": "cat",
+        "n": "Puss-in-Boots Kitten",
+        "e": "🐱",
+        "desc": "ginger kitten in cavalier hat and boots",
+        "group": 0,
+        "row": 3
+      },
+      {
+        "id": "slime",
+        "n": "Poison-Apple Slime",
+        "e": "🍏",
+        "desc": "green apple-shaped slime",
+        "group": 0,
+        "row": 4
+      },
+      {
+        "id": "raccoon",
+        "n": "Robin's Bandit Raccoon",
+        "e": "🦝",
+        "desc": "raccoon with forest bandit cape",
+        "group": 1,
+        "row": 0
+      },
+      {
+        "id": "gremlin",
+        "n": "Elf Apprentice",
+        "e": "🧝",
+        "desc": "tiny adult woodland elf in leaf cap",
+        "group": 1,
+        "row": 1
+      },
+      {
+        "id": "hamster",
+        "n": "Dormouse Knight",
+        "e": "🐹",
+        "desc": "dormouse wearing tiny brass helmet",
+        "group": 1,
+        "row": 2
+      },
+      {
+        "id": "dragonling",
+        "n": "Hoard-Hatched Dragonling",
+        "e": "🐲",
+        "desc": "small emerald dragon",
+        "group": 1,
+        "row": 3
+      },
+      {
+        "id": "parrot",
+        "n": "Tale-Teller Parrot",
+        "e": "🦜",
+        "desc": "jewel toned parrot holding scroll",
+        "group": 1,
+        "row": 4
+      },
+      {
+        "id": "hydra",
+        "n": "Lullaby Hydra",
+        "e": "🐍",
+        "desc": "three headed tiny green hydra",
+        "group": 2,
+        "row": 0
+      },
+      {
+        "id": "phoenix",
+        "n": "Firebird Chick",
+        "e": "🦚",
+        "desc": "fiery golden bird chick",
+        "group": 2,
+        "row": 1
+      },
+      {
+        "id": "ghost",
+        "n": "Grandmother's Ghost Cat",
+        "e": "👻",
+        "desc": "translucent ghost kitten",
+        "group": 2,
+        "row": 2
+      },
+      {
+        "id": "ceodog",
+        "n": "Royal Hound",
+        "e": "🐕",
+        "desc": "gold collared royal hound",
+        "group": 2,
+        "row": 3
+      },
+      {
+        "id": "snail",
+        "n": "Mossback Snail",
+        "e": "🐌",
+        "desc": "mossy snail with lantern shell",
+        "group": 2,
+        "row": 4
+      },
+      {
+        "id": "frog",
+        "n": "Frog Prince Familiar",
+        "e": "🐸",
+        "desc": "green frog with tiny crown",
+        "group": 3,
+        "row": 0
+      },
+      {
+        "id": "bee",
+        "n": "Queen's Honeybee",
+        "e": "🐝",
+        "desc": "golden honeybee with flower crest",
+        "group": 3,
+        "row": 1
+      },
+      {
+        "id": "duck",
+        "n": "Enchanted Bath Duck",
+        "e": "🦆",
+        "desc": "enchanted gold duckling",
+        "group": 3,
+        "row": 2
+      },
+      {
+        "id": "turtle",
+        "n": "Ancient Pond Turtle",
+        "e": "🐢",
+        "desc": "ancient turtle with rune shell",
+        "group": 3,
+        "row": 3
+      },
+      {
+        "id": "owl",
+        "n": "Moonwatch Owl",
+        "e": "🦉",
+        "desc": "white owl with moon crest",
+        "group": 3,
+        "row": 4
+      },
+      {
+        "id": "fox",
+        "n": "Fox of the Crossroads",
+        "e": "🦊",
+        "desc": "rust fox in green scarf",
+        "group": 4,
+        "row": 0
+      },
+      {
+        "id": "octo",
+        "n": "Pearl-Garden Octopus",
+        "e": "🐙",
+        "desc": "small purple octopus with pearls",
+        "group": 4,
+        "row": 1
+      },
+      {
+        "id": "unicorn",
+        "n": "Wishbound Unicorn",
+        "e": "🦄",
+        "desc": "ivory unicorn with gold horn",
+        "group": 4,
+        "row": 2
+      },
+      {
+        "id": "wolf",
+        "n": "Briarwood Wolf",
+        "e": "🐺",
+        "desc": "grey wolf with thorn collar",
+        "group": 4,
+        "row": 3
+      },
+      {
+        "id": "yeti",
+        "n": "Snow-Court Yeti Cub",
+        "e": "🦣",
+        "desc": "white yeti cub with blue scarf",
+        "group": 4,
+        "row": 4
+      },
+      {
+        "id": "griffin",
+        "n": "Gryphon Squire",
+        "e": "🦅",
+        "desc": "gold and brown baby gryphon",
+        "group": 5,
+        "row": 0
+      },
+      {
+        "id": "mimic",
+        "n": "Pocket Mimic",
+        "e": "📦",
+        "desc": "tiny fanged treasure chest",
+        "group": 5,
+        "row": 1
+      },
+      {
+        "id": "angel",
+        "n": "Little Guardian Spirit",
+        "e": "👼",
+        "desc": "tiny luminous fully robed winged guardian spirit",
+        "group": 5,
+        "row": 2
+      },
+      {
+        "id": "kraken",
+        "n": "Coral Kraken",
+        "e": "🦑",
+        "desc": "teal baby kraken with coral crown",
+        "group": 5,
+        "row": 3
+      },
+      {
+        "id": "cthulhu",
+        "n": "Star-Dream Familiar",
+        "e": "👾",
+        "desc": "friendly starry tentacled dream creature",
+        "group": 5,
+        "row": 4
+      }
+    ],
+    "prompts": [
+      "Production animated companion sprite atlas for Grimm Descent dark fairytale mobile game. Exactly4columns5rows,1536x1920 canvas,20equal square cells. Each row ONE distinct charming fantasy familiar repeated in four subtly different walk/idle poses. All faceRIGHT, consistent size/costume, baseline and center, full body within each cell with15percent padding, no clipping. Beautiful premium hand-painted whimsical dark fantasy, readable friendly silhouettes, midnight teal moss aged brass highlights. Actual alpha TRANSPARENT background, no scenery no lettering. Rows top-to-bottom: 1 black raven with letter satchel; 2 brown rat with tiny flute charm; 3 living crystal slipper with delicate wings; 4 ginger kitten in cavalier hat and boots; 5 green apple-shaped slime. Small expressive companions, consistent identity across frames.",
+      "Production animated companion sprite atlas for Grimm Descent dark fairytale mobile game. Exactly4columns5rows,1536x1920 canvas,20equal square cells. Each row ONE distinct charming fantasy familiar repeated in four subtly different walk/idle poses. All faceRIGHT, consistent size/costume, baseline and center, full body within each cell with15percent padding, no clipping. Beautiful premium hand-painted whimsical dark fantasy, readable friendly silhouettes, midnight teal moss aged brass highlights. Actual alpha TRANSPARENT background, no scenery no lettering. Rows top-to-bottom: 1 raccoon with forest bandit cape; 2 tiny adult woodland elf in leaf cap; 3 dormouse wearing tiny brass helmet; 4 small emerald dragon; 5 jewel toned parrot holding scroll. Small expressive companions, consistent identity across frames.",
+      "Production animated companion sprite atlas for Grimm Descent dark fairytale mobile game. Exactly4columns5rows,1536x1920 canvas,20equal square cells. Each row ONE distinct charming fantasy familiar repeated in four subtly different walk/idle poses. All faceRIGHT, consistent size/costume, baseline and center, full body within each cell with15percent padding, no clipping. Beautiful premium hand-painted whimsical dark fantasy, readable friendly silhouettes, midnight teal moss aged brass highlights. Actual alpha TRANSPARENT background, no scenery no lettering. Rows top-to-bottom: 1 three headed tiny green hydra; 2 fiery golden bird chick; 3 translucent ghost kitten; 4 gold collared royal hound; 5 mossy snail with lantern shell. Small expressive companions, consistent identity across frames.",
+      "Production animated companion sprite atlas for Grimm Descent dark fairytale mobile game. Exactly4columns5rows,1536x1920 canvas,20equal square cells. Each row ONE distinct charming fantasy familiar repeated in four subtly different walk/idle poses. All faceRIGHT, consistent size/costume, baseline and center, full body within each cell with15percent padding, no clipping. Beautiful premium hand-painted whimsical dark fantasy, readable friendly silhouettes, midnight teal moss aged brass highlights. Actual alpha TRANSPARENT background, no scenery no lettering. Rows top-to-bottom: 1 green frog with tiny crown; 2 golden honeybee with flower crest; 3 enchanted gold duckling; 4 ancient turtle with rune shell; 5 white owl with moon crest. Small expressive companions, consistent identity across frames.",
+      "Production animated companion sprite atlas for Grimm Descent dark fairytale mobile game. Exactly4columns5rows,1536x1920 canvas,20equal square cells. Each row ONE distinct charming fantasy familiar repeated in four subtly different walk/idle poses. All faceRIGHT, consistent size/costume, baseline and center, full body within each cell with15percent padding, no clipping. Beautiful premium hand-painted whimsical dark fantasy, readable friendly silhouettes, midnight teal moss aged brass highlights. Actual alpha TRANSPARENT background, no scenery no lettering. Rows top-to-bottom: 1 rust fox in green scarf; 2 small purple octopus with pearls; 3 ivory unicorn with gold horn; 4 grey wolf with thorn collar; 5 white yeti cub with blue scarf. Small expressive companions, consistent identity across frames.",
+      "Production animated companion sprite atlas for Grimm Descent dark fairytale mobile game. Exactly4columns5rows,1536x1920 canvas,20equal square cells. Each row ONE distinct charming fantasy familiar repeated in four subtly different walk/idle poses. All faceRIGHT, consistent size/costume, baseline and center, full body within each cell with15percent padding, no clipping. Beautiful premium hand-painted whimsical dark fantasy, readable friendly silhouettes, midnight teal moss aged brass highlights. Actual alpha TRANSPARENT background, no scenery no lettering. Rows top-to-bottom: 1 gold and brown baby gryphon; 2 tiny fanged treasure chest; 3 tiny luminous fully robed winged guardian spirit; 4 teal baby kraken with coral crown; 5 friendly starry tentacled dream creature. Small expressive companions, consistent identity across frames."
+    ]
+  },
+  "areas": [
+    {
+      "key": "overtime",
+      "scene": "dreamlike hall of unfinished tales, suspended clocks, torn pages and violet mist",
+      "units": [
+        "Unpaid Labor Spirit, pale hooded ghost",
+        "Eternal Apprentice, undead wizard student",
+        "Deadline Demon, horned clock creature",
+        "Open Hall Horror, fanged stone arch",
+        "Council Scroll Horror, possessed parchment council",
+        "Mandatory Fun Jester, sinister ragged marionette",
+        "Eternal Stand-Up boss, towering grandfather clock titan"
+      ],
+      "background": "Production landscape background1536x1024 for premium painted dark fairytale mobile side-view game: dreamlike hall of unfinished tales, suspended clocks, torn pages and violet mist. Midnight teal aged brass cinematic painterly lighting, layered atmospheric depth, bottom50percent clear flat battle ground. No characters, no text, no interface.",
+      "sprites": "Production2D fantasy enemy sprite atlas,exactly4columns7rows,1536x2688 canvas,28equal square cells. One distinct creature perrow repeated in4poses neutral,step,windup,strike. All faceLEFT. Fullbody contained incell with15percent padding, consistentfeet baseline and design within eachrow. Premium hand-painted dark fairytale art, teal moss antique brass. Actual alpha TRANSPARENT background no scenery no letters. Rows top-to-bottom: 1 Unpaid Labor Spirit, pale hooded ghost; 2 Eternal Apprentice, undead wizard student; 3 Deadline Demon, horned clock creature; 4 Open Hall Horror, fanged stone arch; 5 Council Scroll Horror, possessed parchment council; 6 Mandatory Fun Jester, sinister ragged marionette; 7 Eternal Stand-Up boss, towering grandfather clock titan. Boss contained in finalrow at cellscale for runtime enlarging."
+    },
+    {
+      "key": "deepforest",
+      "scene": "ancient enchanted woodland clearing with root arches, moss and fireflies",
+      "units": [
+        "grey woodland wolf",
+        "wild tusked boar",
+        "ancient walking tree treant",
+        "venomous green serpent",
+        "giant forest frog",
+        "horned night owl",
+        "Ancient Stag boss with luminous antlers"
+      ],
+      "background": "Production landscape background1536x1024 for premium painted dark fairytale mobile side-view game: ancient enchanted woodland clearing with root arches, moss and fireflies. Midnight teal aged brass cinematic painterly lighting, layered atmospheric depth, bottom50percent clear flat battle ground. No characters, no text, no interface.",
+      "sprites": "Production2D fantasy enemy sprite atlas,exactly4columns7rows,1536x2688 canvas,28equal square cells. One distinct creature perrow repeated in4poses neutral,step,windup,strike. All faceLEFT. Fullbody contained incell with15percent padding, consistentfeet baseline and design within eachrow. Premium hand-painted dark fairytale art, teal moss antique brass. Actual alpha TRANSPARENT background no scenery no letters. Rows top-to-bottom: 1 grey woodland wolf; 2 wild tusked boar; 3 ancient walking tree treant; 4 venomous green serpent; 5 giant forest frog; 6 horned night owl; 7 Ancient Stag boss with luminous antlers. Boss contained in finalrow at cellscale for runtime enlarging."
+    },
+    {
+      "key": "dunes",
+      "scene": "moonlit fairytale desert ruins, crumbling sandstone arches and distant lamp-lit oasis",
+      "units": [
+        "giant golden scorpion",
+        "cursed wrapped mummy",
+        "armored enchanted camel",
+        "ragged desert vulture",
+        "walking thorn cactus",
+        "giant sand worm",
+        "Sphinx boss, monumental winged stone guardian"
+      ],
+      "background": "Production landscape background1536x1024 for premium painted dark fairytale mobile side-view game: moonlit fairytale desert ruins, crumbling sandstone arches and distant lamp-lit oasis. Midnight teal aged brass cinematic painterly lighting, layered atmospheric depth, bottom50percent clear flat battle ground. No characters, no text, no interface.",
+      "sprites": "Production2D fantasy enemy sprite atlas,exactly4columns7rows,1536x2688 canvas,28equal square cells. One distinct creature perrow repeated in4poses neutral,step,windup,strike. All faceLEFT. Fullbody contained incell with15percent padding, consistentfeet baseline and design within eachrow. Premium hand-painted dark fairytale art, teal moss antique brass. Actual alpha TRANSPARENT background no scenery no letters. Rows top-to-bottom: 1 giant golden scorpion; 2 cursed wrapped mummy; 3 armored enchanted camel; 4 ragged desert vulture; 5 walking thorn cactus; 6 giant sand worm; 7 Sphinx boss, monumental winged stone guardian. Boss contained in finalrow at cellscale for runtime enlarging."
+    },
+    {
+      "key": "reef",
+      "scene": "sunken fairytale palace, coral arches and shimmering blue underwater light",
+      "units": [
+        "armored coral crab",
+        "ghostly silver shark",
+        "pearl crowned octopus",
+        "luminous jellyfish",
+        "undead pirate captain",
+        "spiked enchanted puffer fish",
+        "Kraken boss, giant coral crowned tentacled sea monster"
+      ],
+      "background": "Production landscape background1536x1024 for premium painted dark fairytale mobile side-view game: sunken fairytale palace, coral arches and shimmering blue underwater light. Midnight teal aged brass cinematic painterly lighting, layered atmospheric depth, bottom50percent clear flat battle ground. No characters, no text, no interface.",
+      "sprites": "Production2D fantasy enemy sprite atlas,exactly4columns7rows,1536x2688 canvas,28equal square cells. One distinct creature perrow repeated in4poses neutral,step,windup,strike. All faceLEFT. Fullbody contained incell with15percent padding, consistentfeet baseline and design within eachrow. Premium hand-painted dark fairytale art, teal moss antique brass. Actual alpha TRANSPARENT background no scenery no letters. Rows top-to-bottom: 1 armored coral crab; 2 ghostly silver shark; 3 pearl crowned octopus; 4 luminous jellyfish; 5 undead pirate captain; 6 spiked enchanted puffer fish; 7 Kraken boss, giant coral crowned tentacled sea monster. Boss contained in finalrow at cellscale for runtime enlarging."
+    }
+  ],
+  "reefCleanup": "Edit production sprite atlas: remove ONLY the thin horizontal and vertical grid divider lines, making their pixels genuinely alpha transparent. Preserve all 28 creature sprites, exact four-column seven-row cell grid, canvas size, poses, scale and positions. No new backgrounds, no borders, no labels. All empty space transparent. Do not alter character artwork."
+}
