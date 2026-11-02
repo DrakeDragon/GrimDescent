@@ -1,0 +1,265 @@
+{
+  "tool": "Built-in image generation",
+  "gear": {
+    "items": [
+      [
+        "weapon",
+        "Huntsman's Silver Axe",
+        "silver woodcutter axe"
+      ],
+      [
+        "weapon",
+        "Glass-Slipper Bow",
+        "crystal blue bow"
+      ],
+      [
+        "weapon",
+        "Briar Thornblade",
+        "thorn wrapped sword"
+      ],
+      [
+        "weapon",
+        "Oven Witch's Poker",
+        "ember tipped iron fire poker"
+      ],
+      [
+        "helm",
+        "Crown of the Sleeping Court",
+        "antique gold rose crown"
+      ],
+      [
+        "helm",
+        "Hood of the Lost Path",
+        "crimson riding hood"
+      ],
+      [
+        "helm",
+        "Cap of the Seven Miners",
+        "red dwarf miner cap"
+      ],
+      [
+        "helm",
+        "Witch's Moonhat",
+        "violet pointed witch hat"
+      ],
+      [
+        "armor",
+        "Cloak of Red Threads",
+        "crimson embroidered cloak"
+      ],
+      [
+        "armor",
+        "Coat of the Tin Soldier",
+        "tin soldier cuirass"
+      ],
+      [
+        "armor",
+        "Swanfeather Mantle",
+        "white swan feather cloak"
+      ],
+      [
+        "armor",
+        "Dragonscale Hauberk",
+        "green dragon scale breastplate"
+      ],
+      [
+        "trinket",
+        "Key to Bluebeard's Chamber",
+        "antique forbidden golden key"
+      ],
+      [
+        "trinket",
+        "Rumpel's Golden Spindle",
+        "gold spindle and thread"
+      ],
+      [
+        "trinket",
+        "Mirror of Unkind Truths",
+        "ornate enchanted hand mirror"
+      ],
+      [
+        "trinket",
+        "Lamp of Three Wishes",
+        "brass wish lamp"
+      ],
+      [
+        "boots",
+        "Cinderella's Glass Slippers",
+        "pair of crystal slippers"
+      ],
+      [
+        "boots",
+        "Seven-League Boots",
+        "pair of weathered tall leather boots"
+      ],
+      [
+        "boots",
+        "Shoes of the Endless Dance",
+        "pair of ruby dancing shoes"
+      ],
+      [
+        "boots",
+        "Boots of the Clever Cat",
+        "pair of folded cavalier boots"
+      ],
+      [
+        "ring",
+        "Ring of the Frog Prince",
+        "green gem ring with tiny frog crest"
+      ],
+      [
+        "ring",
+        "Seal of the Snow Queen",
+        "icy silver sapphire ring"
+      ],
+      [
+        "ring",
+        "Briar Rose's Vow",
+        "gold rose ring"
+      ],
+      [
+        "ring",
+        "Ring of the Last Wish",
+        "brass ring blue wishing star"
+      ]
+    ],
+    "prompt": "Production inventory icon atlas for Grimm Descent premium painted dark fairytale game. Exactly4columns6rows on1536x2304 canvas,24 equal384 square cells. Each cell one beautiful large centered complete equipment item, no people, no labels or text. Consistent three-quarter view painted fantasy inventory illustration, warm antique gold highlights midnight teal accents, real alpha TRANSPARENT background, no panels no borders no floor, generous12percent padding, no crossing cells. EXACT reading order top-left to bottom-right: 1 silver woodcutter axe; 2 crystal blue bow; 3 thorn wrapped sword; 4 ember tipped iron fire poker; 5 antique gold rose crown; 6 crimson riding hood; 7 red dwarf miner cap; 8 violet pointed witch hat; 9 crimson embroidered cloak; 10 tin soldier cuirass; 11 white swan feather cloak; 12 green dragon scale breastplate; 13 antique forbidden golden key; 14 gold spindle and thread; 15 ornate enchanted hand mirror; 16 brass wish lamp; 17 pair of crystal slippers; 18 pair of weathered tall leather boots; 19 pair of ruby dancing shoes; 20 pair of folded cavalier boots; 21 green gem ring with tiny frog crest; 22 icy silver sapphire ring; 23 gold rose ring; 24 brass ring blue wishing star. Each image fully contained and readable at48pixels."
+  },
+  "ui": {
+    "icons": [
+      "hooded hero bust",
+      "crossed sword and shield",
+      "merchant chest with coins",
+      "magic star wand",
+      "wolf paw print",
+      "rolled treasure map",
+      "ornate open storybook",
+      "brass gear settings",
+      "gold coin",
+      "blue cut gem",
+      "health heart",
+      "silver attack sword",
+      "sand timer",
+      "gold upward upgrade arrow",
+      "brass padlock",
+      "ornate treasure chest",
+      "red strength potion",
+      "blue swiftness potion",
+      "green healing potion",
+      "gold wishing star",
+      "white feather quill",
+      "leather bag",
+      "magic egg",
+      "enchanted scroll",
+      "gold crown achievement",
+      "silver armor helmet",
+      "green shield",
+      "gold spinning spindle",
+      "small camp banner",
+      "raven silhouette",
+      "compass rose",
+      "small glowing camp lantern"
+    ],
+    "prompt": "Premium dark fairytale mobile game UI ICON ATLAS, exactly8columns4rows on1536x768 canvas,32 equal192x192 square cells. Consistent elegant antique brass and ivory pictographic relief icons, moss teal shadows, professional clean readable silhouettes, slightly hand-painted metal enamel finish. Real alpha TRANSPARENT background, no button backgrounds, no borders no text no letters, complete icon centered with20percent padding in each cell. Reading order left-to-right top-to-bottom EXACT: 1 hooded hero bust; 2 crossed sword and shield; 3 merchant chest with coins; 4 magic star wand; 5 wolf paw print; 6 rolled treasure map; 7 ornate open storybook; 8 brass gear settings; 9 gold coin; 10 blue cut gem; 11 health heart; 12 silver attack sword; 13 sand timer; 14 gold upward upgrade arrow; 15 brass padlock; 16 ornate treasure chest; 17 red strength potion; 18 blue swiftness potion; 19 green healing potion; 20 gold wishing star; 21 white feather quill; 22 leather bag; 23 magic egg; 24 enchanted scroll; 25 gold crown achievement; 26 silver armor helmet; 27 green shield; 28 gold spinning spindle; 29 small camp banner; 30 raven silhouette; 31 compass rose; 32 small glowing camp lantern. All icons equally legible at24px, no overlap cells."
+  },
+  "heroes": {
+    "crew": [
+      [
+        "templar",
+        "Jack's Mother, sturdy adult shieldwife in homespun green dress with skillet and iron shield"
+      ],
+      [
+        "gunslinger",
+        "adult Jack Beanstalk, adventurous youth with green coat, slingshot and bean satchel"
+      ],
+      [
+        "monk",
+        "The Giant Who Said Sorry, broad gentle bearded giant in patched brown tunic, great bare fists"
+      ],
+      [
+        "sunpriest",
+        "The Sun Harp, enchanted golden harp construct glowing with warm sunlight"
+      ],
+      [
+        "frost",
+        "Winter's Weather-Witch, adult silver-haired witch in blue cloak with snow staff"
+      ],
+      [
+        "assassin",
+        "adult Tom Thumb, very short nimble adventurer with needle sword and green cap"
+      ],
+      [
+        "manager",
+        "The Magic Beanseller, elderly merchant in moss coat carrying pouch of glowing beans"
+      ],
+      [
+        "fate",
+        "The Unpaid Fate, adult mysterious hooded weaver with spindle and silver fate thread"
+      ]
+    ],
+    "spritePrompt": "Production 2D dark fairytale game hero sprite atlas, EXACT4columns8rows,1536x3072 canvas,32 equal square cells. Each row one distinct fully clothed ADULT hero in four poses: neutral, walk step, skill windup, skill cast. All faceRIGHT and fit entirely inside eachcell with12percent padding, consistent baseline and appearance. Beautiful premium painted fantasy, muted moss teal aged gold, actual ALPHA TRANSPARENT background no scenery no text. Rows top-to-bottom: 1 Jack's Mother, sturdy adult shieldwife in homespun green dress with skillet and iron shield; 2 adult Jack Beanstalk, adventurous youth with green coat, slingshot and bean satchel; 3 The Giant Who Said Sorry, broad gentle bearded giant in patched brown tunic, great bare fists; 4 The Sun Harp, enchanted golden harp construct glowing with warm sunlight; 5 Winter's Weather-Witch, adult silver-haired witch in blue cloak with snow staff; 6 adult Tom Thumb, very short nimble adventurer with needle sword and green cap; 7 The Magic Beanseller, elderly merchant in moss coat carrying pouch of glowing beans; 8 The Unpaid Fate, adult mysterious hooded weaver with spindle and silver fate thread. Clear readable silhouettes, no clipping across cells.",
+    "portraitPrompt": "Production portrait atlas for Grimm Descent,4columns2rows on1536x768 canvas, eight equal square portrait cells. Rich painted dark fairytale bust portraits clear faces warm gold rimlight midnight teal backdrops, no text, no borders. Reading order left to right top tobottom: 1 Jack's Mother, sturdy adult shieldwife in homespun green dress with skillet and iron shield; 2 adult Jack Beanstalk, adventurous youth with green coat, slingshot and bean satchel; 3 The Giant Who Said Sorry, broad gentle bearded giant in patched brown tunic, great bare fists; 4 The Sun Harp, enchanted golden harp construct glowing with warm sunlight; 5 Winter's Weather-Witch, adult silver-haired witch in blue cloak with snow staff; 6 adult Tom Thumb, very short nimble adventurer with needle sword and green cap; 7 The Magic Beanseller, elderly merchant in moss coat carrying pouch of glowing beans; 8 The Unpaid Fate, adult mysterious hooded weaver with spindle and silver fate thread. Same subjects as animated sprite art, all fully clothed adults. Golden harp is an enchanted object hero, depict its face-like carved sun ornament."
+  },
+  "areas": [
+    {
+      "key": "crossroads",
+      "scene": "haunted forest crossroads with crooked signposts, abandoned trunks and raven perched lamps",
+      "units": [
+        "Possessed Trunk, fanged wooden travel chest",
+        "Lost-Luggage Poltergeist, ragged baggage ghost",
+        "Late Phoenix, old flame bird",
+        "Border Gargoyle, horned stone guardian",
+        "Cursed Well-Water, monstrous water bottle",
+        "Sky Captain Zombie, undead flying captain",
+        "Gate Overlord boss, giant winged iron gate guardian"
+      ],
+      "backgroundPrompt": "Production landscape background1536x1024 for Grimm Descent side-view dark fairytale game. haunted forest crossroads with crooked signposts, abandoned trunks and raven perched lamps. Premium hand-painted fantasy, midnight teal antique brass cinematic lighting and atmospheric depth, bottom50percent quiet flat walkable battle ground. No characters, no text, no interface.",
+      "atlasPrompt": "Production transparent 2D enemy sprite atlas for dark fairytale game. Exactly4columns7rows,1536x2688 canvas,28 equal square cells. Each row ONE different creature in four poses: neutral, step, windup, strike. All faceLEFT, entire body contained in cell with12percent padding, no crossing borders, consistent feet baseline and costume per row. Premium painted fantasy, muted moss teal antique brass. Actual alpha TRANSPARENT background, no scenery no text no labels. Rows top to bottom EXACT: 1 Possessed Trunk, fanged wooden travel chest; 2 Lost-Luggage Poltergeist, ragged baggage ghost; 3 Late Phoenix, old flame bird; 4 Border Gargoyle, horned stone guardian; 5 Cursed Well-Water, monstrous water bottle; 6 Sky Captain Zombie, undead flying captain; 7 Gate Overlord boss, giant winged iron gate guardian. Final row boss contained at samecell scale, runtime makes it larger."
+    },
+    {
+      "key": "orrery",
+      "scene": "towering clockwork observatory with celestial brass orrery and enchanted mirror portals",
+      "units": [
+        "Talking Mirror, fanged silver mirror",
+        "Spell Swarm, cluster enchanted envelopes",
+        "Hex Gremlin, small violet imp",
+        "Scroll Revenant, floating cursed scroll",
+        "Rope Serpent, living coiled rope",
+        "Blue Fog Beast, giant blue mist creature",
+        "Grand Orrery boss, huge brass planetary mechanical golem"
+      ],
+      "backgroundPrompt": "Production landscape background1536x1024 for Grimm Descent side-view dark fairytale game. towering clockwork observatory with celestial brass orrery and enchanted mirror portals. Premium hand-painted fantasy, midnight teal antique brass cinematic lighting and atmospheric depth, bottom50percent quiet flat walkable battle ground. No characters, no text, no interface.",
+      "atlasPrompt": "Production transparent 2D enemy sprite atlas for dark fairytale game. Exactly4columns7rows,1536x2688 canvas,28 equal square cells. Each row ONE different creature in four poses: neutral, step, windup, strike. All faceLEFT, entire body contained in cell with12percent padding, no crossing borders, consistent feet baseline and costume per row. Premium painted fantasy, muted moss teal antique brass. Actual alpha TRANSPARENT background, no scenery no text no labels. Rows top to bottom EXACT: 1 Talking Mirror, fanged silver mirror; 2 Spell Swarm, cluster enchanted envelopes; 3 Hex Gremlin, small violet imp; 4 Scroll Revenant, floating cursed scroll; 5 Rope Serpent, living coiled rope; 6 Blue Fog Beast, giant blue mist creature; 7 Grand Orrery boss, huge brass planetary mechanical golem. Final row boss contained at samecell scale, runtime makes it larger."
+    },
+    {
+      "key": "court",
+      "scene": "sinister velvet throne hall with cursed paperwork scrolls, ghostly chandeliers and ruined heraldry",
+      "units": [
+        "Lullaby Banshee, ghostly songstress",
+        "Receipt Gremlin, imp tangled in parchment",
+        "Echo Horror, many mouthed ghost",
+        "Throne Mimic, fanged throne",
+        "Chamberlain Summoner, sinister robed court official",
+        "Entitled Noble, angry nobleman with crown",
+        "The Noble Always Right boss, huge tyrant on walking throne"
+      ],
+      "backgroundPrompt": "Production landscape background1536x1024 for Grimm Descent side-view dark fairytale game. sinister velvet throne hall with cursed paperwork scrolls, ghostly chandeliers and ruined heraldry. Premium hand-painted fantasy, midnight teal antique brass cinematic lighting and atmospheric depth, bottom50percent quiet flat walkable battle ground. No characters, no text, no interface.",
+      "atlasPrompt": "Production transparent 2D enemy sprite atlas for dark fairytale game. Exactly4columns7rows,1536x2688 canvas,28 equal square cells. Each row ONE different creature in four poses: neutral, step, windup, strike. All faceLEFT, entire body contained in cell with12percent padding, no crossing borders, consistent feet baseline and costume per row. Premium painted fantasy, muted moss teal antique brass. Actual alpha TRANSPARENT background, no scenery no text no labels. Rows top to bottom EXACT: 1 Lullaby Banshee, ghostly songstress; 2 Receipt Gremlin, imp tangled in parchment; 3 Echo Horror, many mouthed ghost; 4 Throne Mimic, fanged throne; 5 Chamberlain Summoner, sinister robed court official; 6 Entitled Noble, angry nobleman with crown; 7 The Noble Always Right boss, huge tyrant on walking throne. Final row boss contained at samecell scale, runtime makes it larger."
+    },
+    {
+      "key": "vault",
+      "scene": "ancient dragon treasure vault with gold piles, ruined scales of justice and glowing molten hoard",
+      "units": [
+        "Dragonling Squire, tiny armored dragon",
+        "Gold Mimic, fanged treasure chest",
+        "Royal Lawyers, sinister robed skeletal advocate",
+        "Law Wyrm, long armored serpent",
+        "Hostile Takeover, walking haunted miniature fortress",
+        "Great Lizard Lord, giant horned dinosaur",
+        "Draconis Maximus Hoard King boss, colossal gold armored dragon"
+      ],
+      "backgroundPrompt": "Production landscape background1536x1024 for Grimm Descent side-view dark fairytale game. ancient dragon treasure vault with gold piles, ruined scales of justice and glowing molten hoard. Premium hand-painted fantasy, midnight teal antique brass cinematic lighting and atmospheric depth, bottom50percent quiet flat walkable battle ground. No characters, no text, no interface.",
+      "atlasPrompt": "Production transparent 2D enemy sprite atlas for dark fairytale game. Exactly4columns7rows,1536x2688 canvas,28 equal square cells. Each row ONE different creature in four poses: neutral, step, windup, strike. All faceLEFT, entire body contained in cell with12percent padding, no crossing borders, consistent feet baseline and costume per row. Premium painted fantasy, muted moss teal antique brass. Actual alpha TRANSPARENT background, no scenery no text no labels. Rows top to bottom EXACT: 1 Dragonling Squire, tiny armored dragon; 2 Gold Mimic, fanged treasure chest; 3 Royal Lawyers, sinister robed skeletal advocate; 4 Law Wyrm, long armored serpent; 5 Hostile Takeover, walking haunted miniature fortress; 6 Great Lizard Lord, giant horned dinosaur; 7 Draconis Maximus Hoard King boss, colossal gold armored dragon. Final row boss contained at samecell scale, runtime makes it larger."
+    }
+  ]
+}
