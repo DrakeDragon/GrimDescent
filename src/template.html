@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0d0912">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Grimm Descent — A Dark Fairy Tale Idle RPG</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Pirata+One&family=IM+Fell+English:ital@0;1&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/*CSS*/
+</style>
+</head>
+<body>
+<div id="app">
+ <div id="title" class="screen">
+  <canvas id="titleFx"></canvas>
+  <div class="logo"><div class="l1">✦ A TAP KNIGHT TALE ✦</div><div class="l2">Grimm</div><div class="l3">Descent</div><div class="l4">Once upon a time, it all went wrong.</div></div>
+  <div class="tknight" id="titleKnight"></div>
+  <div style="width:100%;display:flex;flex-direction:column;align-items:center">
+   <div id="titleMenu"></div>
+   <div class="ver">v4 · Happily Ever After (Terms Apply)</div>
+  </div>
+ </div>
+ <div id="game" class="screen hidden">
+  <header id="hud">
+   <div class="coin">🪙 <span id="gold">0</span><small id="dps">0/s</small></div>
+   <div class="mid" id="soHud"></div>
+   <button class="ib" data-act="settings">⚙️</button>
+  </header>
+  <div id="ticker"><b>NEWS:</b><span id="tickerTxt"></span></div>
+  <section id="stage">
+   <canvas id="fx"></canvas>
+   <button id="wxChip" data-act="wxguide">☀️ Clear Skies</button>
+   <div id="floorInfo"><div id="stLabel">STAGE 1</div><div id="stRealm"></div><div id="stWave"></div><div id="stProgWrap"><div id="stProg"></div></div></div>
+   <div id="stageBtns"><button id="autoBtn" data-act="autoTog">AUTO ▶</button><button id="prevBtn" data-act="prevStage">◀</button><button id="nextBtn" data-act="nextStage">▶</button><button id="speedBtn" data-act="speed">×1</button></div>
+   <div id="bossbar" class="hidden"><i></i></div>
+   <div id="banner"></div>
+  </section>
+  <div id="skillbar"></div>
+  <main id="panel"></main>
+  <nav id="tabs"></nav>
+ </div>
+ <div id="modal" class="hidden"><div id="mbox"><div id="mbody"></div></div></div>
+ <div id="toasts"></div>
+</div>
+<script>
+/*JS*/
+</script>
+</body>
+</html>
