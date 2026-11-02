@@ -298,14 +298,14 @@ ACT.cont=()=>{const sv=loadSave();startGame(sv||newState(),true)};
 ACT.newGame=()=>{if(hasSave()){confirmModal("Start a new game? Your current save will be overwritten.","newDo","","New Game")}else startGame(newState(),false)};
 ACT.newDo=()=>{closeModal();startGame(newState(),false)};
 function startGame(st,cont){
- S=st;if(typeof stage2Init==="function")stage2Init();AU.init();AU.resume();AU.vol();recalc();
+ S=st;AU.init();AU.resume();AU.vol();recalc();
  R.buff={cry:0,gold:0,ballad:0};R.cd={};R.en=[];R.proj=[];R.fl=[];R.part=[];R.team=[];R.lastArea=-1;R.wxId="clear";R.speed=S.speed||1;
  buildTeam();
  $("#title").classList.add("hidden");$("#game").classList.remove("hidden");$("#modal").classList.add("hidden");
  resizeCv();tab="heroes";renderSkillbar();renderTabs();renderTab();updHud();
  R.inGame=true;R.modalPause=false;startStage();resizeCv();
  if(cont&&S.max>0){const gap=(Date.now()-S.last)/1000;if(gap>120){const o=offlineGain(gap);if(applyOffline(o))showOffline(o)}}
- saveGame();setTimeout(()=>{if(typeof dailyGift==="function")dailyGift()},2500);
+ saveGame();
 }
 
 /* title fx */
@@ -313,7 +313,7 @@ const TF={c:null,x:null,w:0,h:0,p:[]};
 function titleInit(){TF.c=$("#titleFx");TF.x=TF.c.getContext("2d");titleResize();window.addEventListener("resize",titleResize)}
 function titleResize(){const t=$("#title");if(!TF.c||!t)return;const d=Math.min(2,window.devicePixelRatio||1);TF.w=TF.c.clientWidth||t.clientWidth;TF.h=TF.c.clientHeight||t.clientHeight;TF.c.width=TF.w*d;TF.c.height=TF.h*d;TF.x.setTransform(d,0,0,d,0,0)}
 function titleFx(dt){const x=TF.x;if(!x||!TF.w)return;x.clearRect(0,0,TF.w,TF.h);
- if(TF.p.length<70&&Math.random()<.6)TF.p.push({x:rand(0,TF.w),y:TF.h+10,v:-rand(14,50),s:rand(1.5,3.4),c:["#ffd98a","#e6b84e","#d4435a"][Math.floor(Math.random()*3)],t:rand(0,6)});
+ if(TF.p.length<70&&Math.random()<.6)TF.p.push({x:rand(0,TF.w),y:TF.h+10,v:-rand(14,50),s:rand(1.5,3.4),c:["#ffd98a","#19e6ff","#ff8ad8"][Math.floor(Math.random()*3)],t:rand(0,6)});
  for(let i=TF.p.length-1;i>=0;i--){const p=TF.p[i];p.y+=p.v*dt;p.t+=dt;p.x+=Math.sin(p.t*2)*20*dt;if(p.y<-12){TF.p.splice(i,1);continue}x.globalAlpha=.4+.45*Math.abs(Math.sin(p.t*2));x.fillStyle=p.c;x.shadowColor=p.c;x.shadowBlur=8;x.beginPath();x.arc(p.x,p.y,p.s,0,6.3);x.fill()}x.globalAlpha=1;x.shadowBlur=0}
 
 /* ---------- ui tick, events, boot ---------- */
@@ -335,12 +335,12 @@ document.addEventListener("pointerdown",()=>{AU.init();AU.resume()},{once:true})
 document.addEventListener("visibilitychange",()=>{if(!R.inGame)return;if(document.hidden){saveGame();R.hiddenAt=Date.now()}else if(R.hiddenAt){const gap=(Date.now()-R.hiddenAt)/1000;R.hiddenAt=0;if(gap>120&&!R.modalPause){const o=offlineGain(gap);if(applyOffline(o)){showOffline(o)}}}});
 window.addEventListener("pagehide",()=>{if(R.inGame)saveGame()});
 function boot(){
- $("#titleKnight").innerHTML=`<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="mg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fffbe8"/><stop offset=".6" stop-color="#f4e7c4"/><stop offset="1" stop-color="#e6b84e" stop-opacity="0"/></radialGradient><linearGradient id="gd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#140a2e"/><stop offset="1" stop-color="#05030f"/></linearGradient></defs>
-<g class="moon"><circle cx="200" cy="82" r="78" fill="url(#mg)" opacity=".5"/><circle cx="200" cy="82" r="46" fill="#f7efd6"/><circle cx="186" cy="70" r="8" fill="#d8c9a4"/><circle cx="214" cy="96" r="11" fill="#d8c9a4"/><circle cx="208" cy="64" r="4" fill="#d8c9a4"/></g>
+ $("#titleKnight").innerHTML=`<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="mg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fffbe8"/><stop offset=".6" stop-color="#d8f6ff"/><stop offset="1" stop-color="#7fe8ff" stop-opacity="0"/></radialGradient><linearGradient id="gd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#140a2e"/><stop offset="1" stop-color="#05030f"/></linearGradient></defs>
+<g class="moon"><circle cx="200" cy="82" r="78" fill="url(#mg)" opacity=".5"/><circle cx="200" cy="82" r="46" fill="#f6fbff"/><circle cx="186" cy="70" r="8" fill="#d3e4f0"/><circle cx="214" cy="96" r="11" fill="#d3e4f0"/><circle cx="208" cy="64" r="4" fill="#d3e4f0"/></g>
 <g class="crow"><path d="M30 60q8-8 16 0q8-8 16 0" fill="none" stroke="#05030f" stroke-width="3" stroke-linecap="round"/></g><g class="crow2"><path d="M10 100q6-6 12 0q6-6 12 0" fill="none" stroke="#05030f" stroke-width="2.5" stroke-linecap="round"/></g>
 <path d="M0 190q60-26 120-8t110-4q80-16 170 6V250H0z" fill="url(#gd)"/>
 <g fill="#07041a"><path d="M40 250l6-120-24-34 20 8-10-36 20 24 6-40 8 44 24-20-14 36 26-2-30 32 8 108z"/><path d="M350 250l-4-100 22-26-18 4 8-30-16 18-6-34-8 36-22-14 12 30-24 4 28 24-6 88z"/><path d="M110 250l2-70-14-22 14 6-4-24 12 16 4-20 4 24 14-10-8 22 16 2-20 18 4 58z" opacity=".9"/><path d="M296 250l-2-60 12-20-12 4 4-22-10 14-4-18-6 20-14-8 8 20-14 2 18 16-4 52z" opacity=".9"/></g>
-<g><path d="M150 214v-50l50-36 50 36v50z" fill="#0b0624"/><path d="M142 168l58-46 58 46-12 4-46-36-46 36z" fill="#1a0e3d"/><rect x="186" y="188" width="28" height="26" rx="14" fill="#08041a"/><rect class="win" x="162" y="178" width="18" height="18" rx="3" fill="#ffd98a"/><rect class="win" x="220" y="178" width="18" height="18" rx="3" fill="#ff8ad8"/><path d="M164 140l-6-18 10 6 2-14 6 14" fill="none" stroke="#b3263e" stroke-width="1.6" opacity=".7"/></g>
+<g><path d="M150 214v-50l50-36 50 36v50z" fill="#0b0624"/><path d="M142 168l58-46 58 46-12 4-46-36-46 36z" fill="#1a0e3d"/><rect x="186" y="188" width="28" height="26" rx="14" fill="#08041a"/><rect class="win" x="162" y="178" width="18" height="18" rx="3" fill="#ffd98a"/><rect class="win" x="220" y="178" width="18" height="18" rx="3" fill="#ff8ad8"/><path d="M164 140l-6-18 10 6 2-14 6 14" fill="none" stroke="#ff2fd0" stroke-width="1.6" opacity=".7"/></g>
 <g fill="#ffd98a" opacity=".85"><circle cx="90" cy="176" r="2"/><circle cx="312" cy="170" r="2"/><circle cx="130" cy="150" r="1.6"/><circle cx="278" cy="148" r="1.6"/><circle cx="60" cy="140" r="1.4"/></g>
 <g fill="#e8e0ff"><circle cx="40" cy="24" r="1.4"/><circle cx="90" cy="46" r="1"/><circle cx="330" cy="30" r="1.4"/><circle cx="370" cy="68" r="1"/><circle cx="130" cy="20" r="1"/><circle cx="280" cy="14" r="1.2"/></g></svg>`;
  $("#modal").addEventListener("click",e=>{if(e.target.id==="modal"&&!R.modalPause)closeModal()});

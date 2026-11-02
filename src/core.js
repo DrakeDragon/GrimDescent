@@ -70,7 +70,7 @@ const evoM=k=>1+.25*(S.heroes[k]?S.heroes[k].evo||0:0)+Math.min(3,mtOf(k).aura);
 const spPow=k=>{const h=S.heroes[k];return h.sp>0?CLS[k].sp.pow*Math.pow(1.1,h.sp-1)*(1+.3*(h.evo||0)):0};
 function recalc(){
  const ach=Object.keys(S.ach).length;
- C.glob=(1+0.06*S.soTotal)*(1+0.02*ach)*(1+bookBonus())*(1+0.2*perk("power"))*(1+0.1*gemU("gpower"));
+ C.glob=(1+0.06*S.soTotal)*(1+0.02*ach)*(1+0.2*perk("power"))*(1+0.1*gemU("gpower"));
  const sl=L("sword");
  C.tapMul=1+0.05*sl;
  C.critCh=Math.min(.6,0.03+0.01*L("crit"));C.critMul=2+0.15*L("critdmg");
@@ -286,7 +286,7 @@ A("pet10","Pet Hoarder","Hatch 10 eggs",()=>S.stats.eggs>=10);
 A("restr","Rewrote the Tale","Rewrite the tale once",()=>S.restructures>=1);
 A("crit100","Critical Thinking","Land 100 critical hits",()=>S.stats.crits>=100);
 A("wipe1","That Went Poorly","Suffer a total party wipe",()=>S.stats.wipes>=1);
-function checkAch(){if(typeof questTick==="function")questTick();let n=0;for(const a of ACH){if(!S.ach[a.id]&&a.t()){S.ach[a.id]=1;n++;toast("🏅 "+a.n+" (+2% damage)","good");AU.play("level")}}if(n){recalc();refreshTab("more")}}
+function checkAch(){let n=0;for(const a of ACH){if(!S.ach[a.id]&&a.t()){S.ach[a.id]=1;n++;toast("🏅 "+a.n+" (+2% damage)","good");AU.play("level")}}if(n){recalc();refreshTab("more")}}
 
 /* ---------- prestige & offline ---------- */
 const soGain=()=>Math.floor(Math.pow(Math.max(0,S.max-14),1.3)/2);
