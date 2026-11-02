@@ -431,7 +431,7 @@ const QUIP={
  hire:["Hi. I'm new. Where's the break room?","Reporting for duty! And lunch!","What's the dental situation?","I was told there would be snacks."],
  heal:["Thanks! Don't tell anyone I needed that.","Back in business. Slightly.","Ahh. Magic. Billable, probably."]
 };
-const quip=(h,arr,ch)=>{if(!h||h.down||h.bubT>0||Math.random()>(ch==null?1:ch))return false;let t=null;if(typeof heroLine==="function"&&Math.random()<.85){const cat=CAT_OF.get(arr);if(cat)t=heroLine(h,cat)}say(h,t||pick(arr),3.2);return true};
+const quip=(h,arr,ch)=>{if(!h||h.down||h.bubT>0||Math.random()>(ch==null?1:ch))return false;let t=null;if(typeof heroLine==="function"&&Math.random()<.85){const cat=CAT_OF.get(arr);if(cat)t=heroLine(h,cat)}return say(h,t||pick(arr),3.2)};
 const UTILS=[
  {id:"manual",n:"Training Manual",i:"📘",d:"+1 level on every squad hero."},
  {id:"ticket",n:"Golden Ticket",i:"🎟️",d:"Gold ×2 for 5 minutes."},
@@ -1830,7 +1830,7 @@ function syncHeroes(){
 }
 function layoutSlots(){
  const T=R.team;if(!T||!T.length)return;
- const top=H*.5,bot=H*.88;
+ const top=H*.65,bot=H*.90;
  T.forEach(h=>{const d=SLOT_BY_ID[h.c.slot];h.sx=W*d.fx;h.sy=top+d.fy*(bot-top);
   if(!h.x||h.st==="idle"&&Math.abs(h.x-h.sx)>200){h.x=h.sx;h.y=h.sy}});
 }
@@ -1845,7 +1845,13 @@ function fnum(x,y,txt,col,sz){if(!S.set.numbers||R.fl.length>60)return;R.fl.push
 function burst(x,y,col,n,sp){if(R.part.length>260)return;for(let i=0;i<n;i++){const a=rand(0,6.28),v=rand(.3,1)*(sp||90);R.part.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-30,l:rand(.3,.7),t:0,c:col,s:rand(2,4)})}}
 function ring(x,y,col,r){R.part.push({x,y,vx:0,vy:0,l:.4,t:0,c:col,s:r||40,ring:1})}
 function bolt(pts,col){R.bolts.push({pts,t:0,c:col||"#ffe84a"})}
-function say(o,txt,dur){if(!txt)return;o.bub=txt;o.bubT=dur||3.2}
+function say(o,txt,dur){
+ if(!o||!txt||o.down||o.dead)return false;
+ const now=R.speechClock||0;
+ if(now<(R.speechNext||0)||(R.team||[]).concat(R.en||[]).some(x=>x.bubT>0))return false;
+ const seconds=Math.max(7,Math.min(15,2+txt.split(/\s+/).length*.42),dur||0);
+ o.bub=txt;o.bubT=seconds;R.speechNext=now+seconds+4;return true;
+}
 function ticker(msg){const t=$("#tickerTxt");if(t)t.textContent=" "+msg}
 
 /* ---------- stage flow ---------- */
@@ -1885,7 +1891,7 @@ function spawnEnemy(mob,isB,off,forceKind){
  const g=R.stg.g,rl=realmOf(g);let kk=isB?"boss":forceKind||(rl.mk||MOBKIND)[Math.max(0,rl.mobs.findIndex(m=>m[0]===mob[0]))]||"grunt";
  const K=KINDS[kk];if(K.swarm&&!forceKind&&!isB&&!R.swarmSpawning){R.swarmSpawning=1;for(let i=1;i<K.swarm;i++)spawnEnemy(mob,false,(off||0)+i*14);R.swarmSpawning=0;R.stg.total+=K.swarm-1}
  const hp=floorHP(g)*K.hp;
- const e={e:mob[1],name:mob[0],kind:kk,boss:isB,x:W+30+(off||0)+rand(0,30),y:isB?H*.7:rand(H*.5,H*.88),hp,mhp:hp,spd:K.spd,dmg:K.dmg,iv:K.iv,cd:rand(.3,K.iv),sz:K.sz,rng:K.rng*U,stun:0,slow:0,slowF:1,root:0,burn:0,burnDps:0,flash:0,dead:false,bub:null,bubT:0,ph:rand(0,6.28),lunge:0};
+ const e={e:mob[1],name:mob[0],kind:kk,boss:isB,x:W+30+(off||0)+rand(0,30),y:isB?H*.78:rand(H*.65,H*.90),hp,mhp:hp,spd:K.spd,dmg:K.dmg,iv:K.iv,cd:rand(.3,K.iv),sz:K.sz,rng:K.rng*U,stun:0,slow:0,slowF:1,root:0,burn:0,burnDps:0,flash:0,dead:false,bub:null,bubT:0,ph:rand(0,6.28),lunge:0};
  if(isB){R.stg.bossE=e;say(e,pick(BOSS_QUIPS),3.5)}
  if(forceKind==='elite'){e.mini=true;e.name='Elite '+e.name;e.sz=1.7;R.stg.bossE=e;say(e,pick(BOSS_QUIPS),3.2)}
  R.en.push(e);R.stg.alive++;
@@ -2006,7 +2012,7 @@ function heroSay(h){const r=Math.random();if(r<.93)say(h,heroLine(h,"gen")||pick
 
 function heroUpdate(h,dt){
  const st=C.h[h.k],c=h.c;if(!st)return;
- h.flash=Math.max(0,h.flash-dt);if(h.bubT>0)h.bubT-=dt;
+ h.flash=Math.max(0,h.flash-dt);if(h.bubT>0)h.bubT-=dt/Math.max(1,S.speed);
  if(h.down){h.dt-=dt;if(h.dt<=0){reviveHero(h,.4);ticker("The narrator revives "+c.hero+". They're back.")}return}
  // regen & weather dot
  const w=WX();
@@ -2081,12 +2087,12 @@ function trySpecial(h){
   case"smite":{if(!need())return false;const e=nearestEnemy(h.sx,h.sy);if(!e||e.x-h.sx>280*U)return false;dmgEnemy(e,sd,{col:"#ffe9a0"});const wk=weakestHero();if(wk)healHero(wk,wk.mhp*.1);ring(e.x,e.y,"#ffe9a0",60);AU.play("skill");say(h,"Smite scheduled.",1.6);break}
   default:return false;
  }
- return true;
+ h.artAttack=R.time;return true;
 }
 
 /* ---------- enemies ---------- */
 function enemyUpdate(e,dt){
- e.flash=Math.max(0,e.flash-dt);if(e.bubT>0)e.bubT-=dt;e.lunge=Math.max(0,e.lunge-dt*6);
+ e.flash=Math.max(0,e.flash-dt);if(e.bubT>0)e.bubT-=dt/Math.max(1,S.speed);e.lunge=Math.max(0,e.lunge-dt*6);
  if(e.dead){e.dieT-=dt;return}
  if(e.burn>0){e.burn-=dt;dmgEnemy(e,e.burnDps*dt,{dot:1});if(e.dead)return}
  if(e.slow>0){e.slow-=dt;if(e.slow<=0)e.slowF=1}
@@ -2220,9 +2226,9 @@ function update(dt){
  R.fl=R.fl.filter(f=>f.t<.9);
  for(const b of R.bolts)b.t+=dt;R.bolts=R.bolts.filter(b=>b.t<.25);
  // speech
- R.bubT-=dt;
+ R.speechClock=(R.speechClock||0)+dt/Math.max(1,S.speed);R.bubT-=dt/Math.max(1,S.speed);
  if(R.reply){R.reply.t-=dt;if(R.reply.t<=0){quip(R.reply.who,QUIP.reply);R.reply=null}}
- if(R.bubT<=0){R.bubT=rand(2.6,5);const hs=aliveHeroes();if(hs.length&&R.team.filter(h=>h.bubT>0).length<2){heroSay(pick(hs))}
+ if(R.bubT<=0){R.bubT=rand(12,18);const hs=aliveHeroes();if(hs.length&&R.team.filter(h=>h.bubT>0).length<2){heroSay(pick(hs))}
   const en=liveEn();if(en.length&&Math.random()<.4){const e=pick(en);say(e,pick(ENEMY_QUIPS),2.6)}}
  R.tickerT-=dt;if(R.tickerT<=0){R.tickerT=14;ticker(pick(HR))}
  R.uiT-=dt;if(R.uiT<=0){R.uiT=.25;updateStageHud()}
@@ -2260,19 +2266,40 @@ function updateStageHud(){
 /* Asset metadata uses uniform grid cells and a shared foot anchor. */
 const GAME_ART={
  huntsman:{src:'assets/huntsman.png',cols:4,rows:2,scale:1.9},
+archer:{src:'assets/archer.png',cols:4,rows:2,scale:1.9},
+barbarian:{src:'assets/barbarian.png',cols:4,rows:2,scale:1.9},
+healer:{src:'assets/healer.png',cols:4,rows:2,scale:1.9},
+mage:{src:'assets/mage.png',cols:4,rows:2,scale:1.9},
+rogue:{src:'assets/rogue.png',cols:4,rows:2,scale:1.9},
+bard:{src:'assets/bard.png',cols:4,rows:2,scale:1.9},
+alchemist:{src:'assets/alchemist.png',cols:4,rows:2,scale:1.9},
  rat:{src:'assets/hungry-rat.png',cols:4,rows:2,scale:2.0}
 };
 for(const a of Object.values(GAME_ART)){a.image=new Image();a.image.src=a.src;}
 const artWoods=new Image();artWoods.src='assets/hollow-woods.png';
-function paintSprite(key,sz,attack,phase,still){
+function paintSprite(key,sz,attack,phase,still,attackStart){
  const a=GAME_ART[key];if(!a||!a.image.complete||!a.image.naturalWidth)return false;
  const cw=a.image.naturalWidth/a.cols,ch=a.image.naturalHeight/a.rows;
- const frame=still?0:Math.floor(R.time*8+(phase||0))%a.cols;
+ const frame=attack&&attackStart!=null?Math.min(3,Math.floor((R.time-attackStart)*7)):still?0:Math.floor(R.time*8+(phase||0))%a.cols;
  const row=attack?1:0,dw=sz*a.scale,dh=dw*ch/cw;
  cx.drawImage(a.image,frame*cw,row*ch,cw,ch,-dw/2,sz*.48-dh,dw,dh);return true;
 }
-function drawArtHero(h,sz){return h.k==='knight'&&paintSprite('huntsman',sz,h.lunge>0,h.ph,h.down||h.st==='idle'&&R.trans<=0);}
-function drawArtEnemy(e,sz){return /^(Elite )?(Hungry Rat|Angry Rat|Rat King)$/.test(e.name)&&paintSprite('rat',sz,e.lunge>0,e.ph,e.dead||e.stun>0||e.root>0);}
+const HERO_ART={knight:'huntsman',archer:'archer',barbarian:'barbarian',healer:'healer',mage:'mage',rogue:'rogue',bard:'bard',alchemist:'alchemist'};
+function actorSprite(key,o,sz,still){if(o.lunge>0&&!(o.artLunge>0))o.artAttack=R.time;o.artLunge=o.lunge;const attack=!o.down&&!o.dead&&o.artAttack!=null&&R.time-o.artAttack<.57;return paintSprite(key,sz,attack,o.ph,still,o.artAttack);}
+function drawArtHero(h,sz){return actorSprite(HERO_ART[h.k],h,sz,h.down||h.st==='idle'&&R.trans<=0);}
+function spriteTop(key,y,sz){const a=GAME_ART[key];return a&&a.image.complete&&a.image.naturalWidth?y+sz*.48-sz*a.scale*(a.image.naturalHeight/a.rows)/(a.image.naturalWidth/a.cols):y-sz*.65;}
+function fitActorSize(key,y,sz){const a=GAME_ART[key],ratio=a&&a.image.complete&&a.image.naturalWidth?a.scale*(a.image.naturalHeight/a.rows)/(a.image.naturalWidth/a.cols)-.48:.65;return Math.min(sz,Math.max(12,(y-106)/ratio));}
+function heroSize(h){return fitActorSize(HERO_ART[h.k],h.y,clamp(H*.13,26,40)*(1+.07*((S.heroes[h.k]||{}).evo||0)));}
+function heroTop(h){return spriteTop(HERO_ART[h.k],h.y,heroSize(h))-3;}
+function enemySize(e){return fitActorSize(/^(Elite )?(Hungry Rat|Angry Rat|Rat King)$/.test(e.name)?'rat':null,e.y,26*e.sz*U*clamp(H/300,.9,1.2));}
+function enemyTop(e){return spriteTop(/^(Elite )?(Hungry Rat|Angry Rat|Rat King)$/.test(e.name)?'rat':null,e.y,enemySize(e))-3;}
+function drawSpeech(){
+ const actors=R.team.filter(h=>!h.down).map(h=>({o:h,top:heroTop(h)})).concat(R.en.filter(e=>!e.dead&&e.x<W).map(e=>({o:e,top:enemyTop(e)})));
+ const speaking=actors.find(a=>a.o.bubT>0&&a.o.bub);if(!speaking)return;
+ const ceiling=Math.min(...actors.map(a=>a.top))-17;
+ drawBubble(speaking.o.x,ceiling,speaking.o.bub,speaking.o.bubT);
+}
+function drawArtEnemy(e,sz){return /^(Elite )?(Hungry Rat|Angry Rat|Rat King)$/.test(e.name)&&actorSprite('rat',e,sz,e.dead||e.stun>0||e.root>0);}
 function setFont(sz){cx.font=Math.round(sz)+"px "+EMOJI_FONT}
 function render(){
  if(!cx)return;const rl=realmOf(S.stage),hz=H*.44;
@@ -2303,27 +2330,26 @@ function render(){
  cx.textAlign="center";for(const f of R.fl){cx.globalAlpha=1-f.t/.9;cx.font="bold "+f.sz+"px Nunito,sans-serif";cx.lineWidth=3;cx.strokeStyle="rgba(0,0,0,.7)";cx.strokeText(f.txt,f.x,f.y);cx.fillStyle=f.col;cx.fillText(f.txt,f.x,f.y)}
  cx.globalAlpha=1;
  // bubbles
- for(const h of R.team)if(h.bubT>0&&h.bub)drawBubble(h.x,h.y-hs*.9,h.bub,h.bubT);
- for(const e of R.en)if(!e.dead&&e.bubT>0&&e.bub)drawBubble(e.x,e.y-e.sz*30,e.bub,e.bubT);
+ drawSpeech();
  if(R.flash>0){cx.fillStyle="rgba(255,255,255,"+Math.min(.5,R.flash*2)+")";cx.fillRect(0,0,W,H)}
  if(R.buff.cry>0){cx.strokeStyle="rgba(255,47,208,.5)";cx.lineWidth=4;cx.strokeRect(2,2,W-4,H-4)}
  if(R.buff.gold>0){cx.strokeStyle="rgba(255,211,74,.55)";cx.lineWidth=4;cx.strokeRect(6,6,W-12,H-12)}
 }
-function drawHero(h,sz){const ev=(S.heroes[h.k]&&S.heroes[h.k].evo)||0;sz*=1+.07*ev;
+function drawHero(h,sz){const ev=(S.heroes[h.k]&&S.heroes[h.k].evo)||0;sz=heroSize(h);
  const bob=R.trans>0||h.st==="idle"?Math.sin(R.time*(R.trans>0?14:8)+h.ph)*2:0;
  cx.fillStyle="rgba(0,0,0,.35)";cx.beginPath();cx.ellipse(h.x,h.y+sz*.45,sz*.45,sz*.14,0,0,6.28);cx.fill();
  cx.save();cx.translate(h.x,h.y+bob);
  if(h.down){cx.globalAlpha=.55;cx.rotate(1.3)}
- if(!!h.c.flip!==!!S.flip[h.k])cx.scale(-1,1);
+ if(HERO_ART[h.k]?!!S.flip[h.k]:!!h.c.flip!==!!S.flip[h.k])cx.scale(-1,1);
  setFont(sz*(1+h.lunge*.25));cx.textAlign="center";cx.textBaseline="middle";
  if(h.flash>0){cx.shadowColor="#ff5a6e";cx.shadowBlur=14}
  if(!drawArtHero(h,sz))cx.fillText(h.down?"💤":h.c.e,0,0);cx.shadowBlur=0;cx.restore();cx.textBaseline="alphabetic";
  if(ev&&!h.down){cx.font=Math.round(sz*.3)+"px sans-serif";cx.textAlign="center";cx.fillStyle="#ffd23a";cx.fillText("★".repeat(ev),h.x,h.y+sz*.75)}
- if(!h.down){const bw=sz*.9,x=h.x-bw/2,y=h.y-sz*.65;cx.fillStyle="rgba(0,0,0,.6)";cx.fillRect(x,y,bw,4);cx.fillStyle=h.hp/h.mhp<.3?"#ff5a6e":"#3dffa0";cx.fillRect(x,y,bw*h.hp/h.mhp,4);
+ if(!h.down){const bw=sz*.9,x=h.x-bw/2,y=heroTop(h)-8;cx.fillStyle="rgba(0,0,0,.6)";cx.fillRect(x,y,bw,4);cx.fillStyle=h.hp/h.mhp<.3?"#ff5a6e":"#3dffa0";cx.fillRect(x,y,bw*h.hp/h.mhp,4);
   if(h.shield>0){cx.strokeStyle="#ffe9a0";cx.lineWidth=2;cx.beginPath();cx.arc(h.x,h.y,sz*.6,0,6.28);cx.stroke()}}
 }
 function drawEnemy(e){
- const sz=26*e.sz*U*clamp(H/300,.9,1.2);
+ const sz=enemySize(e);
  let a=e.dead?Math.max(0,e.dieT/.35):1;
  const bob=Math.sin(R.time*7+e.ph)*2;
  cx.fillStyle="rgba(0,0,0,.35)";cx.beginPath();cx.ellipse(e.x,e.y+sz*.45,sz*.45,sz*.13,0,0,6.28);cx.fill();
@@ -2334,20 +2360,28 @@ function drawEnemy(e){
  if(e.burn>0){cx.shadowColor="#ff7a2f";cx.shadowBlur=12}
  if(e.slow>0||e.root>0){cx.shadowColor="#7fe6ff";cx.shadowBlur=10}
  if(!drawArtEnemy(e,sz))cx.fillText(e.e,0,0);cx.restore();cx.textBaseline="alphabetic";
- if(e.stun>0){setFont(14);cx.fillText("💫",e.x,e.y-sz*.7)}
- if(!e.dead&&(e.hp<e.mhp)){const bw=sz*.9,x=e.x-bw/2,y=e.y-sz*.62;cx.fillStyle="rgba(0,0,0,.6)";cx.fillRect(x,y,bw,4);cx.fillStyle="#ff2fd0";cx.fillRect(x,y,bw*Math.max(0,e.hp/e.mhp),4)}
+ if(e.stun>0){setFont(14);cx.fillText("💫",e.x,enemyTop(e)-16)}
+ if(!e.dead&&(e.hp<e.mhp)){const bw=sz*.9,x=e.x-bw/2,y=enemyTop(e)-8;cx.fillStyle="rgba(0,0,0,.6)";cx.fillRect(x,y,bw,4);cx.fillStyle="#ff2fd0";cx.fillRect(x,y,bw*Math.max(0,e.hp/e.mhp),4)}
 }
 function drawPets(){
  let i=0;for(const id of S.petAct){const p=PETS.find(x=>x.id===id);if(!p)continue;setFont(16);cx.textAlign="center";
   const x=W*.05+i*20*U,y=H*.47+Math.sin(R.time*6+i)*3;cx.fillText(p.e,x,y);i++}
 }
+function bubbleLayout(x,y,txt){
+ const maxw=Math.min(420,W-28);let font=11,lines,line,bw,bh;
+ do {cx.font='600 '+font+'px Nunito,sans-serif';line=font+3;lines=[];let cur='';
+ for(const word of txt.split(/\s+/)){if(cur&&cx.measureText(cur+' '+word).width>maxw){lines.push(cur);cur=word}else cur+=(cur?' ':'')+word;}if(cur)lines.push(cur);
+ bw=Math.min(W-12,Math.max(80,...lines.map(l=>cx.measureText(l).width))+20);bh=lines.length*line+18;
+ if(y-bh-7>=4||font<=8)break;font--;
+ }while(true);
+ return {lines,bw,bh,bx:clamp(x-bw/2,6,W-bw-6),by:y-bh-7,line};
+}
 function drawBubble(x,y,txt,t){
- cx.font="bold 10px Nunito,sans-serif";const maxw=130,words=txt.split(" "),lines=[];let cur="";
- for(const w of words){const test=cur?cur+" "+w:w;if(cx.measureText(test).width>maxw&&cur){lines.push(cur);cur=w}else cur=test}lines.push(cur);
- let bw=0;for(const l of lines)bw=Math.max(bw,cx.measureText(l).width);bw+=12;const bh=lines.length*12+8;
- let bx=clamp(x-bw/2,2,W-bw-2),by=Math.max(2,y-bh-6);
- cx.globalAlpha=Math.min(1,t*3);cx.fillStyle="rgba(255,255,255,.95)";cx.beginPath();if(cx.roundRect)cx.roundRect(bx,by,bw,bh,6);else cx.rect(bx,by,bw,bh);cx.fill();
- cx.fillStyle="#1a1530";cx.textAlign="center";lines.forEach((l,i)=>cx.fillText(l,bx+bw/2,by+13+i*12));cx.globalAlpha=1;
+ const b=bubbleLayout(x,y,txt);cx.save();cx.globalAlpha=Math.min(1,t*2);
+ cx.fillStyle='rgba(15,28,28,.97)';cx.strokeStyle='#c7ad73';cx.lineWidth=1;
+ cx.beginPath();if(cx.roundRect)cx.roundRect(b.bx,b.by,b.bw,b.bh,8);else cx.rect(b.bx,b.by,b.bw,b.bh);cx.fill();cx.stroke();
+ cx.beginPath();const tx=clamp(x,b.bx+12,b.bx+b.bw-12);cx.moveTo(tx-5,b.by+b.bh);cx.lineTo(tx,b.by+b.bh+5);cx.lineTo(tx+5,b.by+b.bh);cx.fill();
+ cx.fillStyle='#f1e8d5';cx.textAlign='center';cx.textBaseline='alphabetic';b.lines.forEach((l,i)=>cx.fillText(l,b.bx+b.bw/2,b.by+18+i*b.line));cx.restore();
 }
 function drawWeather(){
  const f=WX().fx;cx.globalAlpha=1;
@@ -2434,6 +2468,8 @@ function drawBg(rl,hz){
  cx.globalAlpha=1;
 }
 
+const PORTRAIT_KEYS=['knight','archer','barbarian','healer','mage','rogue','bard','alchemist'];
+function heroPortrait(k){const i=PORTRAIT_KEYS.indexOf(k);return i<0?CLS[k].e:`<span class="hero-portrait" role="img" aria-label="${CLS[k].hero}" style="--px:${(i%4)*100/3}%;--py:${i<4?0:100}%"></span>`;}
 function knightSVG(p){return`<svg viewBox="0 0 120 150" class="ksvg" xmlns="http://www.w3.org/2000/svg"><defs>
 <linearGradient id="${p}a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9ff8ff"/><stop offset="1" stop-color="#1b86c0"/></linearGradient>
 <linearGradient id="${p}m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7ae6"/><stop offset="1" stop-color="#a20f88"/></linearGradient></defs>
@@ -2539,10 +2575,10 @@ ACT.campDo=d=>{closeModal();if(switchCamp(+d.c)){AU.play("win");renderTab()}};
 function potBar(){return Object.keys(POTS).map(t=>{const p=POTS[t],on=S.pb[t]>0;return`<button class="chip potc ${on?"on":""} ${S.pot[t]>0?"has":""}" data-act="drink" data-t="${t}" style="--pc:${p.c}">${p.i}×${S.pot[t]} <small data-pt="${t}">${on?fmtTime(S.pb[t]):""}</small></button>`}).join("")}
 function heroRow(k){
  const h=S.heroes[k],c=CLS[k],cost=lvCost(k),can=S.gold>=cost;
- return`<div class="hcell"><div class="port ${h.evo?"evo"+h.evo:""}" data-act="hero" data-k="${k}"><span class="pe">${c.e}</span>${h.evo?`<u>${"★".repeat(h.evo)}</u>`:""}<em>Lv ${h.lvl}</em></div><b class="pn">${shortN(c.hero)}</b><button class="gbuy ${can?"can":""}" data-act="hlv" data-k="${k}" data-cost="${cost}">⬆ 🪙${fmt(cost)}</button></div>`}
+ return`<div class="hcell"><div class="port ${h.evo?"evo"+h.evo:""}" data-act="hero" data-k="${k}"><span class="pe">${heroPortrait(k)}</span>${h.evo?`<u>${"★".repeat(h.evo)}</u>`:""}<em>Lv ${h.lvl}</em></div><b class="pn">${shortN(c.hero)}</b><button class="gbuy ${can?"can":""}" data-act="hlv" data-k="${k}" data-cost="${cost}">⬆ 🪙${fmt(cost)}</button></div>`}
 function lockedSlot(sd){
  const k=campHero(sd.id),ok=S.max>=sd.u,cost=slotHeroCost(sd.id);
- return`<div class="hcell lockedslot"><div class="port"><span class="pe">${ok?CLS[k].e:"🔒"}</span><em>${sd.i}</em></div><b class="pn">${ok?shortN(CLS[k].hero):"Stage "+(sd.u+1)}</b>${ok?`<button class="gbuy ${S.gold>=cost?"can":""}" data-act="unlockSlot" data-id="${sd.id}" data-cost="${cost}">UNLOCK 🪙${fmt(cost)}</button>`:`<small class="pn">${sd.n}</small>`}</div>`}
+ return`<div class="hcell lockedslot"><div class="port"><span class="pe">${ok?heroPortrait(k):"🔒"}</span><em>${sd.i}</em></div><b class="pn">${ok?shortN(CLS[k].hero):"Stage "+(sd.u+1)}</b>${ok?`<button class="gbuy ${S.gold>=cost?"can":""}" data-act="unlockSlot" data-id="${sd.id}" data-cost="${cost}">UNLOCK 🪙${fmt(cost)}</button>`:`<small class="pn">${sd.n}</small>`}</div>`}
 function pickBanner(){
  pickTick();
  if(S.picks>0)return`<button class="evt" data-act="pickOpen">🎟️ <b>Recruitment Event!</b> Pick 1 of ${S.pickList?S.pickList.length:3} heroes <u>×${S.picks}</u></button>`;
@@ -2562,7 +2598,7 @@ ACT.hlv=d=>{if(heroLvlUp(d.k)){AU.play("level");renderTab()}else AU.play("err")}
 ACT.drink=d=>{if(usePotion(d.t)){AU.play("heal");toast(POTS[d.t].i+" "+POTS[d.t].n+" active for "+POT_DUR/60+" min!","good");renderTab()}else{AU.play("err");toast("No "+POTS[d.t].n+". Find them in chests or buy in the Shop.","bad")}};
 ACT.unlockSlot=d=>{const k=SLOT_BY_ID[d.id].list[0];if(unlockSlot(d.id)){AU.play("win");toast("🦸 "+CLS[S.seat[d.id]].hero+" took the "+SLOT_BY_ID[d.id].n+" seat! They have concerns.","good");renderTab();checkAch()}else AU.play("err")};
 function heroCardMini(k,extra){const c=CLS[k],y=synText(k),sd=SLOT_BY_ID[c.slot];
- return`<div class="pcard"><div class="av">${c.e}</div><div class="mi"><b>${c.hero}</b><small>${c.n} · ${sd.i} ${sd.n} · ${SYN[k].tags.map(t=>TAGN[t]).join(" ")}</small><small>✨ ${c.sp.n}: ${c.sp.d.replace("POW","×"+c.sp.pow)}</small><small>🔗 ${y.aura}</small><small>🤝 ${y.combo}</small><small class="bs">📜 ${(STORY[k]||"").replace(/\{n\}/g,c.hero)}</small></div>${extra||""}</div>`}
+ return`<div class="pcard"><div class="av">${heroPortrait(k)}</div><div class="mi"><b>${c.hero}</b><small>${c.n} · ${sd.i} ${sd.n} · ${SYN[k].tags.map(t=>TAGN[t]).join(" ")}</small><small>✨ ${c.sp.n}: ${c.sp.d.replace("POW","×"+c.sp.pow)}</small><small>🔗 ${y.aura}</small><small>🤝 ${y.combo}</small><small class="bs">📜 ${(STORY[k]||"").replace(/\{n\}/g,c.hero)}</small></div>${extra||""}</div>`}
 ACT.swapOpen=d=>{const sd=SLOT_BY_ID[d.id];AU.play("ui");
  modal(`<div class="mtitle">${sd.i} ${sd.n} seat</div><div class="msub">${sd.d} Choose who sits here. Levels are kept per hero.</div><div class="plist">`+sd.list.map(k=>{
   if(!S.own[k])return`<div class="pcard lk"><div class="av">❓</div><div class="mi"><b>${CLS[k].hero}</b><small>${CLS[k].n} — win from a Recruitment Event</small></div></div>`;
@@ -2576,10 +2612,10 @@ function openHero(k){
  const h=S.heroes[k],c=CLS[k],st=C.h[k],dep=S.dep.includes(k);
  const slots=SLOTS.map(s=>{const it=h.gear[s];return it?`<button class="item" style="--rc:${RAR[it.r].c}" data-act="item" data-id="${it.id}"><i>${it.e}</i>${it.lv?`<b>+${it.lv}</b>`:""}<small>${SLOT_N[s]}</small></button>`:`<button class="item empty" data-act="emptySlot" data-k="${k}" data-s="${s}"><i>${SLOT_I[s]}</i><small>${SLOT_N[s]}</small></button>`}).join("");
  const spTxt=h.sp>0?c.sp.d.replace("POW","×"+(c.sp.pow*Math.pow(1.1,h.sp-1)).toFixed(2)):c.sp.d.replace("POW","×"+c.sp.pow);
- modal(`<div class="hdet"><div class="big">${c.e}</div><div class="mtitle">${c.hero}</div><div class="msub">${c.n} · Lv ${h.lvl}${c.rng?" · Ranged":" · Melee"}${c.el!=="none"?" · "+ELEMS[c.el].i+ELEMS[c.el].n:""}</div><p class="mp">${c.bio}</p><div class="story"><b>📜 Backstory</b><br>${(STORY[k]||"").replace(/\{n\}/g,c.hero)}</div></div>
+ modal(`<div class="hdet"><div class="big">${heroPortrait(k)}</div><div class="mtitle">${c.hero}</div><div class="msub">${c.n} · Lv ${h.lvl}${c.rng?" · Ranged":" · Melee"}${c.el!=="none"?" · "+ELEMS[c.el].i+ELEMS[c.el].n:""}</div><p class="mp">${c.bio}</p><div class="story"><b>📜 Backstory</b><br>${(STORY[k]||"").replace(/\{n\}/g,c.hero)}</div></div>
  <div class="statbox"><div class="srow"><span>Damage per hit</span><b>${fmt(st.hit)}</b></div><div class="srow"><span>Attack interval</span><b>${st.iv.toFixed(2)}s</b></div><div class="srow"><span>Health</span><b>${fmt(st.hp)}</b></div><div class="srow"><span>Crit chance</span><b>${(st.crit*100).toFixed(0)}%</b></div></div>
  <div class="slots6">${slots}</div>
- <div class="row"><div class="ico">${c.ic}</div><div class="info"><b>Level</b> <em>${h.lvl}</em><small>One button: +1 level. Attack lv ${h.at} · Special lv ${h.sp} grow automatically.</small></div>${buyBtn("hlv2",k,lvCost(k),`data-k="${k}"`,"UPGRADE")}</div>
+ <div class="row"><div class="ico">${heroPortrait(k)}</div><div class="info"><b>Level</b> <em>${h.lvl}</em><small>One button: +1 level. Attack lv ${h.at} · Special lv ${h.sp} grow automatically.</small></div>${buyBtn("hlv2",k,lvCost(k),`data-k="${k}"`,"UPGRADE")}</div>
  <div class="row"><div class="ico">⚔️</div><div class="info"><b>${c.atk}</b> <em>Lv ${h.at}</em><small>+6% basic attack damage per 2 levels</small></div></div>
  <div class="row"><div class="ico">✨</div><div class="info"><b>${c.sp.n}</b> <em>${h.sp?"Lv "+h.sp:"Learns at Lv 5"}</em><small>${spTxt} (cooldown ${c.sp.cd}s)</small></div></div>
  ${c.pass?`<div class="hint">Passive while in the squad: ${c.bio.split("Passive:")[1]||""}</div>`:""}
@@ -2749,7 +2785,7 @@ const TF={c:null,x:null,w:0,h:0,p:[]};
 function titleInit(){TF.c=$("#titleFx");TF.x=TF.c.getContext("2d");titleResize();window.addEventListener("resize",titleResize)}
 function titleResize(){const t=$("#title");if(!TF.c||!t)return;const d=Math.min(2,window.devicePixelRatio||1);TF.w=TF.c.clientWidth||t.clientWidth;TF.h=TF.c.clientHeight||t.clientHeight;TF.c.width=TF.w*d;TF.c.height=TF.h*d;TF.x.setTransform(d,0,0,d,0,0)}
 function titleFx(dt){const x=TF.x;if(!x||!TF.w)return;x.clearRect(0,0,TF.w,TF.h);
- if(TF.p.length<70&&Math.random()<.6)TF.p.push({x:rand(0,TF.w),y:TF.h+10,v:-rand(14,50),s:rand(1.5,3.4),c:["#ffd98a","#19e6ff","#ff8ad8"][Math.floor(Math.random()*3)],t:rand(0,6)});
+ if(TF.p.length<70&&Math.random()<.6)TF.p.push({x:rand(0,TF.w),y:TF.h+10,v:-rand(14,50),s:rand(1.5,3.4),c:["#d9b96e","#a6bda3","#cca46b"][Math.floor(Math.random()*3)],t:rand(0,6)});
  for(let i=TF.p.length-1;i>=0;i--){const p=TF.p[i];p.y+=p.v*dt;p.t+=dt;p.x+=Math.sin(p.t*2)*20*dt;if(p.y<-12){TF.p.splice(i,1);continue}x.globalAlpha=.4+.45*Math.abs(Math.sin(p.t*2));x.fillStyle=p.c;x.shadowColor=p.c;x.shadowBlur=8;x.beginPath();x.arc(p.x,p.y,p.s,0,6.3);x.fill()}x.globalAlpha=1;x.shadowBlur=0}
 
 /* ---------- ui tick, events, boot ---------- */

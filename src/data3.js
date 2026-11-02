@@ -17,7 +17,7 @@ const QUIP={
  hire:["Hi. I'm new. Where's the break room?","Reporting for duty! And lunch!","What's the dental situation?","I was told there would be snacks."],
  heal:["Thanks! Don't tell anyone I needed that.","Back in business. Slightly.","Ahh. Magic. Billable, probably."]
 };
-const quip=(h,arr,ch)=>{if(!h||h.down||h.bubT>0||Math.random()>(ch==null?1:ch))return false;let t=null;if(typeof heroLine==="function"&&Math.random()<.85){const cat=CAT_OF.get(arr);if(cat)t=heroLine(h,cat)}say(h,t||pick(arr),3.2);return true};
+const quip=(h,arr,ch)=>{if(!h||h.down||h.bubT>0||Math.random()>(ch==null?1:ch))return false;let t=null;if(typeof heroLine==="function"&&Math.random()<.85){const cat=CAT_OF.get(arr);if(cat)t=heroLine(h,cat)}return say(h,t||pick(arr),3.2)};
 const UTILS=[
  {id:"manual",n:"Training Manual",i:"📘",d:"+1 level on every squad hero."},
  {id:"ticket",n:"Golden Ticket",i:"🎟️",d:"Gold ×2 for 5 minutes."},

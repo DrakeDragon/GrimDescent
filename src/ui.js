@@ -1,3 +1,5 @@
+const PORTRAIT_KEYS=['knight','archer','barbarian','healer','mage','rogue','bard','alchemist'];
+function heroPortrait(k){const i=PORTRAIT_KEYS.indexOf(k);return i<0?CLS[k].e:`<span class="hero-portrait" role="img" aria-label="${CLS[k].hero}" style="--px:${(i%4)*100/3}%;--py:${i<4?0:100}%"></span>`;}
 function knightSVG(p){return`<svg viewBox="0 0 120 150" class="ksvg" xmlns="http://www.w3.org/2000/svg"><defs>
 <linearGradient id="${p}a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9ff8ff"/><stop offset="1" stop-color="#1b86c0"/></linearGradient>
 <linearGradient id="${p}m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7ae6"/><stop offset="1" stop-color="#a20f88"/></linearGradient></defs>
@@ -103,10 +105,10 @@ ACT.campDo=d=>{closeModal();if(switchCamp(+d.c)){AU.play("win");renderTab()}};
 function potBar(){return Object.keys(POTS).map(t=>{const p=POTS[t],on=S.pb[t]>0;return`<button class="chip potc ${on?"on":""} ${S.pot[t]>0?"has":""}" data-act="drink" data-t="${t}" style="--pc:${p.c}">${p.i}×${S.pot[t]} <small data-pt="${t}">${on?fmtTime(S.pb[t]):""}</small></button>`}).join("")}
 function heroRow(k){
  const h=S.heroes[k],c=CLS[k],cost=lvCost(k),can=S.gold>=cost;
- return`<div class="hcell"><div class="port ${h.evo?"evo"+h.evo:""}" data-act="hero" data-k="${k}"><span class="pe">${c.e}</span>${h.evo?`<u>${"★".repeat(h.evo)}</u>`:""}<em>Lv ${h.lvl}</em></div><b class="pn">${shortN(c.hero)}</b><button class="gbuy ${can?"can":""}" data-act="hlv" data-k="${k}" data-cost="${cost}">⬆ 🪙${fmt(cost)}</button></div>`}
+ return`<div class="hcell"><div class="port ${h.evo?"evo"+h.evo:""}" data-act="hero" data-k="${k}"><span class="pe">${heroPortrait(k)}</span>${h.evo?`<u>${"★".repeat(h.evo)}</u>`:""}<em>Lv ${h.lvl}</em></div><b class="pn">${shortN(c.hero)}</b><button class="gbuy ${can?"can":""}" data-act="hlv" data-k="${k}" data-cost="${cost}">⬆ 🪙${fmt(cost)}</button></div>`}
 function lockedSlot(sd){
  const k=campHero(sd.id),ok=S.max>=sd.u,cost=slotHeroCost(sd.id);
- return`<div class="hcell lockedslot"><div class="port"><span class="pe">${ok?CLS[k].e:"🔒"}</span><em>${sd.i}</em></div><b class="pn">${ok?shortN(CLS[k].hero):"Stage "+(sd.u+1)}</b>${ok?`<button class="gbuy ${S.gold>=cost?"can":""}" data-act="unlockSlot" data-id="${sd.id}" data-cost="${cost}">UNLOCK 🪙${fmt(cost)}</button>`:`<small class="pn">${sd.n}</small>`}</div>`}
+ return`<div class="hcell lockedslot"><div class="port"><span class="pe">${ok?heroPortrait(k):"🔒"}</span><em>${sd.i}</em></div><b class="pn">${ok?shortN(CLS[k].hero):"Stage "+(sd.u+1)}</b>${ok?`<button class="gbuy ${S.gold>=cost?"can":""}" data-act="unlockSlot" data-id="${sd.id}" data-cost="${cost}">UNLOCK 🪙${fmt(cost)}</button>`:`<small class="pn">${sd.n}</small>`}</div>`}
 function pickBanner(){
  pickTick();
  if(S.picks>0)return`<button class="evt" data-act="pickOpen">🎟️ <b>Recruitment Event!</b> Pick 1 of ${S.pickList?S.pickList.length:3} heroes <u>×${S.picks}</u></button>`;
@@ -126,7 +128,7 @@ ACT.hlv=d=>{if(heroLvlUp(d.k)){AU.play("level");renderTab()}else AU.play("err")}
 ACT.drink=d=>{if(usePotion(d.t)){AU.play("heal");toast(POTS[d.t].i+" "+POTS[d.t].n+" active for "+POT_DUR/60+" min!","good");renderTab()}else{AU.play("err");toast("No "+POTS[d.t].n+". Find them in chests or buy in the Shop.","bad")}};
 ACT.unlockSlot=d=>{const k=SLOT_BY_ID[d.id].list[0];if(unlockSlot(d.id)){AU.play("win");toast("🦸 "+CLS[S.seat[d.id]].hero+" took the "+SLOT_BY_ID[d.id].n+" seat! They have concerns.","good");renderTab();checkAch()}else AU.play("err")};
 function heroCardMini(k,extra){const c=CLS[k],y=synText(k),sd=SLOT_BY_ID[c.slot];
- return`<div class="pcard"><div class="av">${c.e}</div><div class="mi"><b>${c.hero}</b><small>${c.n} · ${sd.i} ${sd.n} · ${SYN[k].tags.map(t=>TAGN[t]).join(" ")}</small><small>✨ ${c.sp.n}: ${c.sp.d.replace("POW","×"+c.sp.pow)}</small><small>🔗 ${y.aura}</small><small>🤝 ${y.combo}</small><small class="bs">📜 ${(STORY[k]||"").replace(/\{n\}/g,c.hero)}</small></div>${extra||""}</div>`}
+ return`<div class="pcard"><div class="av">${heroPortrait(k)}</div><div class="mi"><b>${c.hero}</b><small>${c.n} · ${sd.i} ${sd.n} · ${SYN[k].tags.map(t=>TAGN[t]).join(" ")}</small><small>✨ ${c.sp.n}: ${c.sp.d.replace("POW","×"+c.sp.pow)}</small><small>🔗 ${y.aura}</small><small>🤝 ${y.combo}</small><small class="bs">📜 ${(STORY[k]||"").replace(/\{n\}/g,c.hero)}</small></div>${extra||""}</div>`}
 ACT.swapOpen=d=>{const sd=SLOT_BY_ID[d.id];AU.play("ui");
  modal(`<div class="mtitle">${sd.i} ${sd.n} seat</div><div class="msub">${sd.d} Choose who sits here. Levels are kept per hero.</div><div class="plist">`+sd.list.map(k=>{
   if(!S.own[k])return`<div class="pcard lk"><div class="av">❓</div><div class="mi"><b>${CLS[k].hero}</b><small>${CLS[k].n} — win from a Recruitment Event</small></div></div>`;
@@ -140,10 +142,10 @@ function openHero(k){
  const h=S.heroes[k],c=CLS[k],st=C.h[k],dep=S.dep.includes(k);
  const slots=SLOTS.map(s=>{const it=h.gear[s];return it?`<button class="item" style="--rc:${RAR[it.r].c}" data-act="item" data-id="${it.id}"><i>${it.e}</i>${it.lv?`<b>+${it.lv}</b>`:""}<small>${SLOT_N[s]}</small></button>`:`<button class="item empty" data-act="emptySlot" data-k="${k}" data-s="${s}"><i>${SLOT_I[s]}</i><small>${SLOT_N[s]}</small></button>`}).join("");
  const spTxt=h.sp>0?c.sp.d.replace("POW","×"+(c.sp.pow*Math.pow(1.1,h.sp-1)).toFixed(2)):c.sp.d.replace("POW","×"+c.sp.pow);
- modal(`<div class="hdet"><div class="big">${c.e}</div><div class="mtitle">${c.hero}</div><div class="msub">${c.n} · Lv ${h.lvl}${c.rng?" · Ranged":" · Melee"}${c.el!=="none"?" · "+ELEMS[c.el].i+ELEMS[c.el].n:""}</div><p class="mp">${c.bio}</p><div class="story"><b>📜 Backstory</b><br>${(STORY[k]||"").replace(/\{n\}/g,c.hero)}</div></div>
+ modal(`<div class="hdet"><div class="big">${heroPortrait(k)}</div><div class="mtitle">${c.hero}</div><div class="msub">${c.n} · Lv ${h.lvl}${c.rng?" · Ranged":" · Melee"}${c.el!=="none"?" · "+ELEMS[c.el].i+ELEMS[c.el].n:""}</div><p class="mp">${c.bio}</p><div class="story"><b>📜 Backstory</b><br>${(STORY[k]||"").replace(/\{n\}/g,c.hero)}</div></div>
  <div class="statbox"><div class="srow"><span>Damage per hit</span><b>${fmt(st.hit)}</b></div><div class="srow"><span>Attack interval</span><b>${st.iv.toFixed(2)}s</b></div><div class="srow"><span>Health</span><b>${fmt(st.hp)}</b></div><div class="srow"><span>Crit chance</span><b>${(st.crit*100).toFixed(0)}%</b></div></div>
  <div class="slots6">${slots}</div>
- <div class="row"><div class="ico">${c.ic}</div><div class="info"><b>Level</b> <em>${h.lvl}</em><small>One button: +1 level. Attack lv ${h.at} · Special lv ${h.sp} grow automatically.</small></div>${buyBtn("hlv2",k,lvCost(k),`data-k="${k}"`,"UPGRADE")}</div>
+ <div class="row"><div class="ico">${heroPortrait(k)}</div><div class="info"><b>Level</b> <em>${h.lvl}</em><small>One button: +1 level. Attack lv ${h.at} · Special lv ${h.sp} grow automatically.</small></div>${buyBtn("hlv2",k,lvCost(k),`data-k="${k}"`,"UPGRADE")}</div>
  <div class="row"><div class="ico">⚔️</div><div class="info"><b>${c.atk}</b> <em>Lv ${h.at}</em><small>+6% basic attack damage per 2 levels</small></div></div>
  <div class="row"><div class="ico">✨</div><div class="info"><b>${c.sp.n}</b> <em>${h.sp?"Lv "+h.sp:"Learns at Lv 5"}</em><small>${spTxt} (cooldown ${c.sp.cd}s)</small></div></div>
  ${c.pass?`<div class="hint">Passive while in the squad: ${c.bio.split("Passive:")[1]||""}</div>`:""}
@@ -313,7 +315,7 @@ const TF={c:null,x:null,w:0,h:0,p:[]};
 function titleInit(){TF.c=$("#titleFx");TF.x=TF.c.getContext("2d");titleResize();window.addEventListener("resize",titleResize)}
 function titleResize(){const t=$("#title");if(!TF.c||!t)return;const d=Math.min(2,window.devicePixelRatio||1);TF.w=TF.c.clientWidth||t.clientWidth;TF.h=TF.c.clientHeight||t.clientHeight;TF.c.width=TF.w*d;TF.c.height=TF.h*d;TF.x.setTransform(d,0,0,d,0,0)}
 function titleFx(dt){const x=TF.x;if(!x||!TF.w)return;x.clearRect(0,0,TF.w,TF.h);
- if(TF.p.length<70&&Math.random()<.6)TF.p.push({x:rand(0,TF.w),y:TF.h+10,v:-rand(14,50),s:rand(1.5,3.4),c:["#ffd98a","#19e6ff","#ff8ad8"][Math.floor(Math.random()*3)],t:rand(0,6)});
+ if(TF.p.length<70&&Math.random()<.6)TF.p.push({x:rand(0,TF.w),y:TF.h+10,v:-rand(14,50),s:rand(1.5,3.4),c:["#d9b96e","#a6bda3","#cca46b"][Math.floor(Math.random()*3)],t:rand(0,6)});
  for(let i=TF.p.length-1;i>=0;i--){const p=TF.p[i];p.y+=p.v*dt;p.t+=dt;p.x+=Math.sin(p.t*2)*20*dt;if(p.y<-12){TF.p.splice(i,1);continue}x.globalAlpha=.4+.45*Math.abs(Math.sin(p.t*2));x.fillStyle=p.c;x.shadowColor=p.c;x.shadowBlur=8;x.beginPath();x.arc(p.x,p.y,p.s,0,6.3);x.fill()}x.globalAlpha=1;x.shadowBlur=0}
 
 /* ---------- ui tick, events, boot ---------- */
