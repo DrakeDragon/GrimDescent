@@ -1,0 +1,68 @@
+{
+  "tool": "Built-in image generation",
+  "areas": [
+    {
+      "key": "fungal",
+      "scene": "glowing ancient fungal grotto with mushroom spa pools and poisonous flowers",
+      "units": [
+        "mushroom masseuse with tiny claws",
+        "giant hot spring toad",
+        "steam specter",
+        "enormous mossy snail",
+        "cucumber eye horror vegetable monster",
+        "lotion elemental bubbling bottle slime",
+        "Spore Queen boss, regal giant poisonous mushroom sorceress"
+      ],
+      "backgroundPrompt": "Use case: stylized-concept. Production 1536x1024 landscape background for Grimm Descent side-view dark fairytale battle game: glowing ancient fungal grotto with mushroom spa pools and poisonous flowers. Exquisite hand-painted premium fantasy, midnight teal moss antique brass palette adapted to environment, cinematic atmospheric layers. Bottom 50 percent flat clear battle ground, NO characters text or UI. Strong depth, clear silhouettes, scenery entirely filling canvas.",
+      "atlasPrompt": "Production transparent 2D enemy sprite atlas for Grimm Descent dark fairytale game. EXACTLY four columns, seven rows, canvas1536x2688, equal square cells, no text. Each row one distinct creature repeated in four poses: neutral, step, attack windup, strike. All face LEFT. Each complete creature inside its own cell with 12 percent padding and consistent feet baseline. Real alpha transparent background no floor or scenery. Rich hand-painted fantasy, readable silhouette, moss midnight teal brass accents. Rows top to bottom: 1: mushroom masseuse with tiny claws; 2: giant hot spring toad; 3: steam specter; 4: enormous mossy snail; 5: cucumber eye horror vegetable monster; 6: lotion elemental bubbling bottle slime; 7: Spore Queen boss, regal giant poisonous mushroom sorceress. Last row unique huge boss scaled same as other cells for runtime resizing. Consistent identity across frames."
+    },
+    {
+      "key": "forge",
+      "scene": "witch queen volcanic forge, black iron anvils and rivers of lava",
+      "units": [
+        "small fire imp",
+        "red salamander",
+        "cinder elemental",
+        "coffee golem iron pot",
+        "possessed furnace forge of wrath",
+        "overseer imp with whip",
+        "Ember Judge boss, towering fire armored executioner"
+      ],
+      "backgroundPrompt": "Use case: stylized-concept. Production 1536x1024 landscape background for Grimm Descent side-view dark fairytale battle game: witch queen volcanic forge, black iron anvils and rivers of lava. Exquisite hand-painted premium fantasy, midnight teal moss antique brass palette adapted to environment, cinematic atmospheric layers. Bottom 50 percent flat clear battle ground, NO characters text or UI. Strong depth, clear silhouettes, scenery entirely filling canvas.",
+      "atlasPrompt": "Production transparent 2D enemy sprite atlas for Grimm Descent dark fairytale game. EXACTLY four columns, seven rows, canvas1536x2688, equal square cells, no text. Each row one distinct creature repeated in four poses: neutral, step, attack windup, strike. All face LEFT. Each complete creature inside its own cell with 12 percent padding and consistent feet baseline. Real alpha transparent background no floor or scenery. Rich hand-painted fantasy, readable silhouette, moss midnight teal brass accents. Rows top to bottom: 1: small fire imp; 2: red salamander; 3: cinder elemental; 4: coffee golem iron pot; 5: possessed furnace forge of wrath; 6: overseer imp with whip; 7: Ember Judge boss, towering fire armored executioner. Last row unique huge boss scaled same as other cells for runtime resizing. Consistent identity across frames."
+    },
+    {
+      "key": "frost",
+      "scene": "frozen palace pantry in glacier, frosted food shelves and moonlit ice arches",
+      "units": [
+        "frostbite fiend",
+        "ice cube knight",
+        "frost goose squire",
+        "hostile snowman",
+        "ice cream wraith",
+        "frostbitten magical bean monster",
+        "Pie Colossus boss, monstrous giant armored frozen pie"
+      ],
+      "backgroundPrompt": "Use case: stylized-concept. Production 1536x1024 landscape background for Grimm Descent side-view dark fairytale battle game: frozen palace pantry in glacier, frosted food shelves and moonlit ice arches. Exquisite hand-painted premium fantasy, midnight teal moss antique brass palette adapted to environment, cinematic atmospheric layers. Bottom 50 percent flat clear battle ground, NO characters text or UI. Strong depth, clear silhouettes, scenery entirely filling canvas.",
+      "atlasPrompt": "Production transparent 2D enemy sprite atlas for Grimm Descent dark fairytale game. EXACTLY four columns, seven rows, canvas1536x2688, equal square cells, no text. Each row one distinct creature repeated in four poses: neutral, step, attack windup, strike. All face LEFT. Each complete creature inside its own cell with 12 percent padding and consistent feet baseline. Real alpha transparent background no floor or scenery. Rich hand-painted fantasy, readable silhouette, moss midnight teal brass accents. Rows top to bottom: 1: frostbite fiend; 2: ice cube knight; 3: frost goose squire; 4: hostile snowman; 5: ice cream wraith; 6: frostbitten magical bean monster; 7: Pie Colossus boss, monstrous giant armored frozen pie. Last row unique huge boss scaled same as other cells for runtime resizing. Consistent identity across frames."
+    },
+    {
+      "key": "cloud",
+      "scene": "ancient palace floating among storm clouds, marble terraces and gold sunlit arches",
+      "units": [
+        "cloud peddler",
+        "cherub guard",
+        "gull gatekeeper",
+        "harpy host",
+        "lightning imp",
+        "feast mimic with teeth",
+        "Zeus Cloud Landlord boss, giant storm god with lightning staff"
+      ],
+      "backgroundPrompt": "Use case: stylized-concept. Production 1536x1024 landscape background for Grimm Descent side-view dark fairytale battle game: ancient palace floating among storm clouds, marble terraces and gold sunlit arches. Exquisite hand-painted premium fantasy, midnight teal moss antique brass palette adapted to environment, cinematic atmospheric layers. Bottom 50 percent flat clear battle ground, NO characters text or UI. Strong depth, clear silhouettes, scenery entirely filling canvas.",
+      "atlasPrompt": "Production transparent 2D enemy sprite atlas for Grimm Descent dark fairytale game. EXACTLY four columns, seven rows, canvas1536x2688, equal square cells, no text. Each row one distinct creature repeated in four poses: neutral, step, attack windup, strike. All face LEFT. Each complete creature inside its own cell with 12 percent padding and consistent feet baseline. Real alpha transparent background no floor or scenery. Rich hand-painted fantasy, readable silhouette, moss midnight teal brass accents. Rows top to bottom: 1: cloud peddler; 2: cherub guard; 3: gull gatekeeper; 4: harpy host; 5: lightning imp; 6: feast mimic with teeth; 7: Zeus Cloud Landlord boss, giant storm god with lightning staff. Last row unique huge boss scaled same as other cells for runtime resizing. Consistent identity across frames."
+    }
+  ],
+  "heroes": "Create a production game sprite atlas with alpha transparent background. Dark fairytale hand-painted fantasy art, elegant muted colors. EXACTLY four columns and eight rows on a 1536x3072 canvas, 32 equal square cells. One fully clothed ADULT fantasy adventurer design per row, repeated in four different poses: standing, walking, readying a skill, using a skill. All characters face right. Whole body contained inside each cell with padding; consistent scale, costume, and foot position across each row. Rows top to bottom: 1 adult male silver armored knight with blue cape and sword; 2 adult female blonde archer with silver-blue coat and crystal bow; 3 adult short stocky red-bearded dwarf miner with pickaxe; 4 adult raven-haired princess healer with blue cream dress and apple; 5 elderly silver-haired fairy woman with violet robe and wand; 6 upright ginger cat adventurer wearing hat boots and carrying rapier; 7 adult rose-haired princess in green and pink armor carrying thorn staff; 8 elderly apple seller wearing moss shawl carrying basket. No letters, no text, no backdrop, no floor, no cropping.",
+  "portraits": "Production painted dark-fairytale game portrait atlas. Exactly four columns two rows, eight square cells, landscape1536x768 canvas. Beautiful hand-painted fantasy bust portraits, warm gold rim lighting, midnight teal backgrounds, no text or borders. One adult character per cell, exact order: top row left to right adult silver-armored Prince Charming with blue cape, adult Cinderella silver-blue archer with crystalline bow, Grumpy red-bearded dwarf miner, adult Snow White raven hair blue and cream dress apple. Bottom row left to right elderly silver-haired Fairy Godmother violet robe and wand, ginger Puss in Boots wearing cavalier hat, adult Briar Rose green and rose armor thorn staff, elderly Apple Peddler moss shawl and basket. Original dark storybook designs; all fully clothed, consistent style and clear faces.",
+  "campaigns": "Production campaign art atlas for Grimm Descent. Exactly TWO columns FIVE rows, 1536x1920 canvas. Ten landscape768x384 cells, no borders no text. Each cell one gorgeous distinct painted dark fairytale environment, cinematic fantasy art midnight teal aged brass, atmospheric painterly lighting. Row1 left Hollow Woods with witch cottage, right Sleeping Court castle choked with roses and mirrors. Row2 left giant beanstalk to cloud fortress, right drowned undersea kingdom with coral palace. Row3 left Frost Court ice palace aurora, right Clockwork Workshop enchanted brass toys and gears. Row4 left Dragon Wedding ruined cathedral with dragon silhouette, right Bone Orchard skull trees and chicken-leg hut. Row5 left Thousand Nights desert palace under crescent moon, right Last Page floating torn book pages in infinite dark ink void. Keep each scene in its own cell, not a continuous landscape, no interface or lettering."
+}
