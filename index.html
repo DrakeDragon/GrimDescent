@@ -368,6 +368,12 @@ button{border-radius:5px}
 #stage{min-height:260px}#stageBtns button{background:#0b1a18e8;border-color:#b99c5e66}#stage:before{background:radial-gradient(120% 100% at 50% 40%,transparent 65%,#07141266)}
 @media(max-height:650px){#stage{min-height:230px}.logo .l2{font-size:50px}.logo .l4{margin-top:4px}#titleMenu{padding:9px;gap:7px}.trow .btn{padding:9px 5px}.ver{margin-top:3px}}
 #mbox{background:linear-gradient(#223631,#11221f);border:1px solid #b99c5e77;border-radius:12px;box-shadow:0 18px 65px #0009}
+/* All upgrade states use the same brass and forest palette. */
+.gbuy,.gbuy.can,.buy,.buy.can,.mini.can,.qb.can,button.evo.can,button.evo.rdy{background:linear-gradient(180deg,#c7ad73,#8c703e);color:#101c18;border:1px solid #e0c58b;border-radius:5px;box-shadow:0 2px 0 #4a3a23,0 3px 8px #0003;font-family:Nunito,system-ui,sans-serif;font-weight:900;text-shadow:none;animation:none;min-height:34px}
+.gbuy:not(.can),.buy:not(.can){background:linear-gradient(#293c34,#1b2b25);border-color:#776b4e;color:#a9aa96;box-shadow:0 2px 0 #111c16;opacity:1}
+.gbuy.can:active,.buy.can:active,.mini.can:active{transform:translateY(2px);box-shadow:none;background:#b59960}
+.qty button,.qty button.on{border-color:#8b7954;color:#d9cba8;background:#152822}.qty button.on{background:#4e5136;border-color:#c7ad73}
+.gcard{background:linear-gradient(#21362f,#152720);border-color:#8b795455}
 
 </style>
 </head>
@@ -2196,6 +2202,8 @@ function buyGem(id){
  S.gemUp[id]=l+1;recalc();return{ok:1};
 }
 
+const SPRITE_BOUNDS={"huntsman":[[11,60,373,450],[0,65,384,447],[0,64,384,448],[0,65,384,447],[21,55,363,418],[0,51,384,422],[0,56,384,414],[0,48,384,428]],"bard":[[42,8,320,504],[13,8,345,468],[12,8,355,504],[43,9,315,468],[19,0,365,448],[0,31,384,418],[15,0,369,450],[14,69,359,359]],"rogue":[[41,11,301,475],[44,20,306,459],[47,26,282,452],[42,20,324,465],[33,38,325,425],[0,59,384,400],[0,6,384,457],[23,78,335,386]],"barbarian":[[22,21,285,481],[15,39,351,459],[17,47,329,451],[0,44,352,457],[14,99,370,383],[0,100,384,383],[0,5,384,479],[0,160,378,323]],"healer":[[27,63,333,401],[35,67,317,397],[42,64,317,401],[55,66,315,398],[32,23,317,425],[0,79,384,369],[0,28,384,423],[0,68,346,382]],"mage":[[77,29,286,441],[70,29,291,441],[69,29,254,483],[47,30,304,440],[35,76,349,363],[5,76,379,360],[0,0,384,445],[0,109,354,333]],"rat":[[26,166,351,297],[19,151,354,303],[25,161,343,298],[15,173,359,283],[23,117,338,314],[0,64,377,370],[8,184,363,248],[5,131,366,300]],"alchemist":[[27,28,283,448],[4,27,335,449],[18,29,323,445],[37,30,306,446],[8,32,376,443],[0,64,384,404],[0,14,366,461],[6,38,356,437]],"archer":[[17,29,366,483],[16,31,367,481],[3,32,372,445],[1,33,369,445],[18,0,366,480],[0,0,367,479],[1,147,383,323],[0,0,369,486]],"cellar-0":[[18,83,219,115],[10,81,227,156],[42,50,184,187],[9,78,214,159],[13,16,224,221],[8,0,223,237],[1,0,236,237],[0,0,232,189],[37,0,156,237],[27,0,149,237],[10,0,227,237],[0,0,222,237],[22,0,204,195],[2,0,223,237],[17,0,220,237],[0,0,232,237],[15,23,222,158],[0,0,237,237],[0,0,237,237],[0,0,234,237],[8,0,219,237],[6,0,224,237],[5,0,232,237],[0,0,233,237],[11,0,226,209],[4,0,223,202],[1,0,236,208],[0,0,232,207]],"cellar-1":[[18,83,219,115],[10,81,227,156],[42,50,184,187],[9,78,214,159],[13,16,224,221],[8,0,223,237],[1,0,236,237],[0,0,232,189],[37,0,156,237],[27,0,149,237],[10,0,227,237],[0,0,222,237],[22,0,204,195],[2,0,223,237],[17,0,220,237],[0,0,232,237],[15,23,222,158],[0,0,237,237],[0,0,237,237],[0,0,234,237],[8,0,219,237],[6,0,224,237],[5,0,232,237],[0,0,233,237],[11,0,226,209],[4,0,223,202],[1,0,236,208],[0,0,232,207]],"cellar-2":[[18,83,219,115],[10,81,227,156],[42,50,184,187],[9,78,214,159],[13,16,224,221],[8,0,223,237],[1,0,236,237],[0,0,232,189],[37,0,156,237],[27,0,149,237],[10,0,227,237],[0,0,222,237],[22,0,204,195],[2,0,223,237],[17,0,220,237],[0,0,232,237],[15,23,222,158],[0,0,237,237],[0,0,237,237],[0,0,234,237],[8,0,219,237],[6,0,224,237],[5,0,232,237],[0,0,233,237],[11,0,226,209],[4,0,223,202],[1,0,236,208],[0,0,232,207]],"cellar-3":[[18,83,219,115],[10,81,227,156],[42,50,184,187],[9,78,214,159],[13,16,224,221],[8,0,223,237],[1,0,236,237],[0,0,232,189],[37,0,156,237],[27,0,149,237],[10,0,227,237],[0,0,222,237],[22,0,204,195],[2,0,223,237],[17,0,220,237],[0,0,232,237],[15,23,222,158],[0,0,237,237],[0,0,237,237],[0,0,234,237],[8,0,219,237],[6,0,224,237],[5,0,232,237],[0,0,233,237],[11,0,226,209],[4,0,223,202],[1,0,236,208],[0,0,232,207]],"cellar-4":[[18,83,219,115],[10,81,227,156],[42,50,184,187],[9,78,214,159],[13,16,224,221],[8,0,223,237],[1,0,236,237],[0,0,232,189],[37,0,156,237],[27,0,149,237],[10,0,227,237],[0,0,222,237],[22,0,204,195],[2,0,223,237],[17,0,220,237],[0,0,232,237],[15,23,222,158],[0,0,237,237],[0,0,237,237],[0,0,234,237],[8,0,219,237],[6,0,224,237],[5,0,232,237],[0,0,233,237],[11,0,226,209],[4,0,223,202],[1,0,236,208],[0,0,232,207]],"cellar-5":[[18,83,219,115],[10,81,227,156],[42,50,184,187],[9,78,214,159],[13,16,224,221],[8,0,223,237],[1,0,236,237],[0,0,232,189],[37,0,156,237],[27,0,149,237],[10,0,227,237],[0,0,222,237],[22,0,204,195],[2,0,223,237],[17,0,220,237],[0,0,232,237],[15,23,222,158],[0,0,237,237],[0,0,237,237],[0,0,234,237],[8,0,219,237],[6,0,224,237],[5,0,232,237],[0,0,233,237],[11,0,226,209],[4,0,223,202],[1,0,236,208],[0,0,232,207]],"cellar-6":[[18,83,219,115],[10,81,227,156],[42,50,184,187],[9,78,214,159],[13,16,224,221],[8,0,223,237],[1,0,236,237],[0,0,232,189],[37,0,156,237],[27,0,149,237],[10,0,227,237],[0,0,222,237],[22,0,204,195],[2,0,223,237],[17,0,220,237],[0,0,232,237],[15,23,222,158],[0,0,237,237],[0,0,237,237],[0,0,234,237],[8,0,219,237],[6,0,224,237],[5,0,232,237],[0,0,233,237],[11,0,226,209],[4,0,223,202],[1,0,236,208],[0,0,232,207]],"sewer-0":[[9,59,228,148],[0,54,237,152],[0,37,237,200],[0,50,225,187],[19,13,217,224],[10,2,227,235],[17,0,211,237],[1,0,230,237],[14,0,218,237],[5,0,226,237],[7,0,230,237],[0,0,224,237],[17,0,217,237],[26,0,205,237],[0,0,237,237],[0,0,229,237],[15,0,218,237],[2,0,229,237],[4,0,233,237],[0,0,229,237],[15,0,200,237],[10,0,190,237],[0,0,237,237],[0,0,222,237],[3,0,234,205],[0,0,237,209],[0,0,237,204],[0,0,236,209]],"sewer-1":[[9,59,228,148],[0,54,237,152],[0,37,237,200],[0,50,225,187],[19,13,217,224],[10,2,227,235],[17,0,211,237],[1,0,230,237],[14,0,218,237],[5,0,226,237],[7,0,230,237],[0,0,224,237],[17,0,217,237],[26,0,205,237],[0,0,237,237],[0,0,229,237],[15,0,218,237],[2,0,229,237],[4,0,233,237],[0,0,229,237],[15,0,200,237],[10,0,190,237],[0,0,237,237],[0,0,222,237],[3,0,234,205],[0,0,237,209],[0,0,237,204],[0,0,236,209]],"sewer-2":[[9,59,228,148],[0,54,237,152],[0,37,237,200],[0,50,225,187],[19,13,217,224],[10,2,227,235],[17,0,211,237],[1,0,230,237],[14,0,218,237],[5,0,226,237],[7,0,230,237],[0,0,224,237],[17,0,217,237],[26,0,205,237],[0,0,237,237],[0,0,229,237],[15,0,218,237],[2,0,229,237],[4,0,233,237],[0,0,229,237],[15,0,200,237],[10,0,190,237],[0,0,237,237],[0,0,222,237],[3,0,234,205],[0,0,237,209],[0,0,237,204],[0,0,236,209]],"sewer-3":[[9,59,228,148],[0,54,237,152],[0,37,237,200],[0,50,225,187],[19,13,217,224],[10,2,227,235],[17,0,211,237],[1,0,230,237],[14,0,218,237],[5,0,226,237],[7,0,230,237],[0,0,224,237],[17,0,217,237],[26,0,205,237],[0,0,237,237],[0,0,229,237],[15,0,218,237],[2,0,229,237],[4,0,233,237],[0,0,229,237],[15,0,200,237],[10,0,190,237],[0,0,237,237],[0,0,222,237],[3,0,234,205],[0,0,237,209],[0,0,237,204],[0,0,236,209]],"sewer-4":[[9,59,228,148],[0,54,237,152],[0,37,237,200],[0,50,225,187],[19,13,217,224],[10,2,227,235],[17,0,211,237],[1,0,230,237],[14,0,218,237],[5,0,226,237],[7,0,230,237],[0,0,224,237],[17,0,217,237],[26,0,205,237],[0,0,237,237],[0,0,229,237],[15,0,218,237],[2,0,229,237],[4,0,233,237],[0,0,229,237],[15,0,200,237],[10,0,190,237],[0,0,237,237],[0,0,222,237],[3,0,234,205],[0,0,237,209],[0,0,237,204],[0,0,236,209]],"sewer-5":[[9,59,228,148],[0,54,237,152],[0,37,237,200],[0,50,225,187],[19,13,217,224],[10,2,227,235],[17,0,211,237],[1,0,230,237],[14,0,218,237],[5,0,226,237],[7,0,230,237],[0,0,224,237],[17,0,217,237],[26,0,205,237],[0,0,237,237],[0,0,229,237],[15,0,218,237],[2,0,229,237],[4,0,233,237],[0,0,229,237],[15,0,200,237],[10,0,190,237],[0,0,237,237],[0,0,222,237],[3,0,234,205],[0,0,237,209],[0,0,237,204],[0,0,236,209]],"sewer-6":[[9,59,228,148],[0,54,237,152],[0,37,237,200],[0,50,225,187],[19,13,217,224],[10,2,227,235],[17,0,211,237],[1,0,230,237],[14,0,218,237],[5,0,226,237],[7,0,230,237],[0,0,224,237],[17,0,217,237],[26,0,205,237],[0,0,237,237],[0,0,229,237],[15,0,218,237],[2,0,229,237],[4,0,233,237],[0,0,229,237],[15,0,200,237],[10,0,190,237],[0,0,237,237],[0,0,222,237],[3,0,234,205],[0,0,237,209],[0,0,237,204],[0,0,236,209]],"goblin-0":[[43,39,131,198],[24,38,130,199],[8,9,229,228],[0,44,212,193],[14,0,198,237],[1,0,236,237],[0,0,237,237],[0,0,222,237],[18,0,204,237],[12,0,219,237],[5,0,232,237],[0,0,229,237],[18,0,219,237],[20,0,210,237],[2,0,235,237],[0,0,228,237],[12,0,225,237],[0,0,227,237],[12,0,225,237],[0,0,224,237],[11,0,209,237],[8,0,205,237],[1,0,236,237],[0,0,227,158],[10,0,227,214],[0,0,237,213],[0,0,237,223],[0,6,231,215]],"goblin-1":[[43,39,131,198],[24,38,130,199],[8,9,229,228],[0,44,212,193],[14,0,198,237],[1,0,236,237],[0,0,237,237],[0,0,222,237],[18,0,204,237],[12,0,219,237],[5,0,232,237],[0,0,229,237],[18,0,219,237],[20,0,210,237],[2,0,235,237],[0,0,228,237],[12,0,225,237],[0,0,227,237],[12,0,225,237],[0,0,224,237],[11,0,209,237],[8,0,205,237],[1,0,236,237],[0,0,227,158],[10,0,227,214],[0,0,237,213],[0,0,237,223],[0,6,231,215]],"goblin-2":[[43,39,131,198],[24,38,130,199],[8,9,229,228],[0,44,212,193],[14,0,198,237],[1,0,236,237],[0,0,237,237],[0,0,222,237],[18,0,204,237],[12,0,219,237],[5,0,232,237],[0,0,229,237],[18,0,219,237],[20,0,210,237],[2,0,235,237],[0,0,228,237],[12,0,225,237],[0,0,227,237],[12,0,225,237],[0,0,224,237],[11,0,209,237],[8,0,205,237],[1,0,236,237],[0,0,227,158],[10,0,227,214],[0,0,237,213],[0,0,237,223],[0,6,231,215]],"goblin-3":[[43,39,131,198],[24,38,130,199],[8,9,229,228],[0,44,212,193],[14,0,198,237],[1,0,236,237],[0,0,237,237],[0,0,222,237],[18,0,204,237],[12,0,219,237],[5,0,232,237],[0,0,229,237],[18,0,219,237],[20,0,210,237],[2,0,235,237],[0,0,228,237],[12,0,225,237],[0,0,227,237],[12,0,225,237],[0,0,224,237],[11,0,209,237],[8,0,205,237],[1,0,236,237],[0,0,227,158],[10,0,227,214],[0,0,237,213],[0,0,237,223],[0,6,231,215]],"goblin-4":[[43,39,131,198],[24,38,130,199],[8,9,229,228],[0,44,212,193],[14,0,198,237],[1,0,236,237],[0,0,237,237],[0,0,222,237],[18,0,204,237],[12,0,219,237],[5,0,232,237],[0,0,229,237],[18,0,219,237],[20,0,210,237],[2,0,235,237],[0,0,228,237],[12,0,225,237],[0,0,227,237],[12,0,225,237],[0,0,224,237],[11,0,209,237],[8,0,205,237],[1,0,236,237],[0,0,227,158],[10,0,227,214],[0,0,237,213],[0,0,237,223],[0,6,231,215]],"goblin-5":[[43,39,131,198],[24,38,130,199],[8,9,229,228],[0,44,212,193],[14,0,198,237],[1,0,236,237],[0,0,237,237],[0,0,222,237],[18,0,204,237],[12,0,219,237],[5,0,232,237],[0,0,229,237],[18,0,219,237],[20,0,210,237],[2,0,235,237],[0,0,228,237],[12,0,225,237],[0,0,227,237],[12,0,225,237],[0,0,224,237],[11,0,209,237],[8,0,205,237],[1,0,236,237],[0,0,227,158],[10,0,227,214],[0,0,237,213],[0,0,237,223],[0,6,231,215]],"goblin-6":[[43,39,131,198],[24,38,130,199],[8,9,229,228],[0,44,212,193],[14,0,198,237],[1,0,236,237],[0,0,237,237],[0,0,222,237],[18,0,204,237],[12,0,219,237],[5,0,232,237],[0,0,229,237],[18,0,219,237],[20,0,210,237],[2,0,235,237],[0,0,228,237],[12,0,225,237],[0,0,227,237],[12,0,225,237],[0,0,224,237],[11,0,209,237],[8,0,205,237],[1,0,236,237],[0,0,227,158],[10,0,227,214],[0,0,237,213],[0,0,237,223],[0,6,231,215]],"crypt-0":[[28,22,209,210],[0,22,192,207],[18,4,219,233],[0,38,224,191],[42,11,157,226],[8,11,206,226],[25,0,212,237],[0,33,228,204],[63,0,151,237],[36,0,201,224],[0,0,237,237],[0,0,221,237],[29,0,207,237],[0,8,237,229],[0,0,237,237],[0,0,224,237],[21,0,216,237],[0,0,230,237],[0,0,237,237],[0,0,231,237],[23,0,214,237],[0,0,237,237],[0,0,237,237],[0,0,228,237],[19,0,208,221],[1,0,236,219],[0,0,237,222],[0,0,231,220]],"crypt-1":[[28,22,209,210],[0,22,192,207],[18,4,219,233],[0,38,224,191],[42,11,157,226],[8,11,206,226],[25,0,212,237],[0,33,228,204],[63,0,151,237],[36,0,201,224],[0,0,237,237],[0,0,221,237],[29,0,207,237],[0,8,237,229],[0,0,237,237],[0,0,224,237],[21,0,216,237],[0,0,230,237],[0,0,237,237],[0,0,231,237],[23,0,214,237],[0,0,237,237],[0,0,237,237],[0,0,228,237],[19,0,208,221],[1,0,236,219],[0,0,237,222],[0,0,231,220]],"crypt-2":[[28,22,209,210],[0,22,192,207],[18,4,219,233],[0,38,224,191],[42,11,157,226],[8,11,206,226],[25,0,212,237],[0,33,228,204],[63,0,151,237],[36,0,201,224],[0,0,237,237],[0,0,221,237],[29,0,207,237],[0,8,237,229],[0,0,237,237],[0,0,224,237],[21,0,216,237],[0,0,230,237],[0,0,237,237],[0,0,231,237],[23,0,214,237],[0,0,237,237],[0,0,237,237],[0,0,228,237],[19,0,208,221],[1,0,236,219],[0,0,237,222],[0,0,231,220]],"crypt-3":[[28,22,209,210],[0,22,192,207],[18,4,219,233],[0,38,224,191],[42,11,157,226],[8,11,206,226],[25,0,212,237],[0,33,228,204],[63,0,151,237],[36,0,201,224],[0,0,237,237],[0,0,221,237],[29,0,207,237],[0,8,237,229],[0,0,237,237],[0,0,224,237],[21,0,216,237],[0,0,230,237],[0,0,237,237],[0,0,231,237],[23,0,214,237],[0,0,237,237],[0,0,237,237],[0,0,228,237],[19,0,208,221],[1,0,236,219],[0,0,237,222],[0,0,231,220]],"crypt-4":[[28,22,209,210],[0,22,192,207],[18,4,219,233],[0,38,224,191],[42,11,157,226],[8,11,206,226],[25,0,212,237],[0,33,228,204],[63,0,151,237],[36,0,201,224],[0,0,237,237],[0,0,221,237],[29,0,207,237],[0,8,237,229],[0,0,237,237],[0,0,224,237],[21,0,216,237],[0,0,230,237],[0,0,237,237],[0,0,231,237],[23,0,214,237],[0,0,237,237],[0,0,237,237],[0,0,228,237],[19,0,208,221],[1,0,236,219],[0,0,237,222],[0,0,231,220]],"crypt-5":[[28,22,209,210],[0,22,192,207],[18,4,219,233],[0,38,224,191],[42,11,157,226],[8,11,206,226],[25,0,212,237],[0,33,228,204],[63,0,151,237],[36,0,201,224],[0,0,237,237],[0,0,221,237],[29,0,207,237],[0,8,237,229],[0,0,237,237],[0,0,224,237],[21,0,216,237],[0,0,230,237],[0,0,237,237],[0,0,231,237],[23,0,214,237],[0,0,237,237],[0,0,237,237],[0,0,228,237],[19,0,208,221],[1,0,236,219],[0,0,237,222],[0,0,231,220]],"crypt-6":[[28,22,209,210],[0,22,192,207],[18,4,219,233],[0,38,224,191],[42,11,157,226],[8,11,206,226],[25,0,212,237],[0,33,228,204],[63,0,151,237],[36,0,201,224],[0,0,237,237],[0,0,221,237],[29,0,207,237],[0,8,237,229],[0,0,237,237],[0,0,224,237],[21,0,216,237],[0,0,230,237],[0,0,237,237],[0,0,231,237],[23,0,214,237],[0,0,237,237],[0,0,237,237],[0,0,228,237],[19,0,208,221],[1,0,236,219],[0,0,237,222],[0,0,231,220]]};
+
 /* ============ GRIMM DESCENT — BATTLE ENGINE ============ */
 const GOLDK=0.35;
 const EMOJI_FONT='"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
@@ -2438,7 +2446,7 @@ function heroUpdate(h,dt){
     const e=nearestEnemy(h.sx,h.sy,1e9);
     if(e&&e.x-h.sx<=210*U){h.tgt=e;h.st="charge"}
    }else{
-    if(h.k==="healer"){const wk=weakestHero();if(wk&&wk.hp/wk.mhp<.92){healHero(wk,wk.mhp*Math.min(.2,.05*(1+.03*(hk.lvl-1)+.03*(hk.at-1))));AU.play("heal");burst(wk.x,wk.y,"#5df08a",5,60);h.cd=st.iv;return}}
+    if(h.k==="healer"){const wk=weakestHero();if(wk&&wk.hp/wk.mhp<.92){healHero(wk,wk.mhp*Math.min(.2,.05*(1+.03*(hk.lvl-1)+.03*(hk.at-1))));AU.play("heal");h.artAttack=R.time;burst(wk.x,wk.y,"#5df08a",5,60);h.cd=st.iv;return}}
     const e=nearestEnemy(h.x,h.y);
     if(e&&e.x-h.x<=c.rng*U){fireBolt(h,e);h.cd=st.iv}
    }
@@ -2453,6 +2461,7 @@ function heroUpdate(h,dt){
  h.sayT=(h.sayT==null?rand(5,12):h.sayT)-dt;
 }
 function fireBolt(h,e){
+ h.artAttack=R.time;
  const col=ELCOL[h.c.el]||"#fff";
  R.proj.push({t:"bolt",x:h.x+10*U,y:h.y-6,tgt:e,sp:620*U,dmg:heroDmgBase(h),k:h.k,col,arrow:h.k==="archer",h});AU.play("shoot");
 }
@@ -2651,7 +2660,7 @@ function frame(ts){
  if(R.inGame&&!R.modalPause&&!document.hidden){
   acc+=dt*S.speed;let n=0;while(acc>=1/30&&n<10){update(1/30);acc-=1/30;n++}if(n>=10)acc=0;
  }
- if(R.inGame)render();
+ if(R.inGame){if(!R.modalPause&&!document.hidden)R.artTime=(R.artTime||0)+dt*Math.min(1.4,S.speed||1);render();}
 }
 function startLoop(){if(R.loopOn)return;R.loopOn=true;requestAnimationFrame(frame)}
 
@@ -2682,23 +2691,39 @@ bard:{src:'assets/bard.png',cols:4,rows:2,scale:1.9},
 alchemist:{src:'assets/alchemist.png',cols:4,rows:2,scale:1.9},
  rat:{src:'assets/hungry-rat.png',cols:4,rows:2,scale:2.0}
 };
+const PROGRESSION_AREAS=['cellar','sewer','goblin','crypt'];
+const ENEMY_ART={};
+PROGRESSION_AREAS.forEach((area,i)=>{const realm=REALMS[i];realm.mobs.concat([realm.boss]).forEach((mob,row)=>{const key=area+'-'+row;GAME_ART[key]={src:'assets/'+area+'-enemies.png',cols:4,rows:7,scale:1.8,enemyRow:row};ENEMY_ART[mob[0]]=key;});});
+const STAGE_BACKGROUNDS=PROGRESSION_AREAS.map(area=>{const im=new Image();im.src='assets/'+area+'-background.png';return im;});
+function enemyArtKey(e){return ENEMY_ART[e.name.replace(/^Elite /,'')]||(/^(Hungry Rat|Angry Rat|Rat King)$/.test(e.name)?'rat':null);}
 for(const a of Object.values(GAME_ART)){a.image=new Image();a.image.src=a.src;}
 const artWoods=new Image();artWoods.src='assets/hollow-woods.png';
 function paintSprite(key,sz,attack,phase,still,attackStart){
  const a=GAME_ART[key];if(!a||!a.image.complete||!a.image.naturalWidth)return false;
  const cw=a.image.naturalWidth/a.cols,ch=a.image.naturalHeight/a.rows;
- const frame=attack&&attackStart!=null?Math.min(3,Math.floor((R.time-attackStart)*7)):still?0:Math.floor(R.time*8+(phase||0))%a.cols;
- const row=attack?1:0,dw=sz*a.scale,dh=dw*ch/cw;
- cx.drawImage(a.image,frame*cw,row*ch,cw,ch,-dw/2,sz*.48-dh,dw,dh);return true;
+ const isAtlas=a.enemyRow!=null,row=isAtlas?a.enemyRow:attack?1:0;
+ const walk=isAtlas?[0,1,0,1]:[0,1,2,3];
+ const clock=(R.artTime||0)*5+(phase||0);
+ const age=Math.max(0,R.time-(attackStart||0))*7;
+ const index=attack?Math.min(isAtlas?1:3,Math.floor(age)):Math.floor(clock)%walk.length;
+ const frame=attack?(isAtlas?2+index:index):still?0:walk[index];
+ const next=attack?Math.min(isAtlas?3:3,frame+1):still?frame:walk[(index+1)%walk.length];
+ const frac=attack?age-Math.floor(age):clock-Math.floor(clock),blend=still?0:frac*frac*(3-2*frac);
+ if(!a.canvas){a.canvas=document.createElement('canvas');a.canvas.width=cw;a.canvas.height=ch;a.context=a.canvas.getContext('2d');}
+ const bc=a.context;bc.clearRect(0,0,cw,ch);bc.globalCompositeOperation='lighter';
+ const draw=(f,alpha)=>{if(alpha<=0)return;const box=(typeof SPRITE_BOUNDS!=='undefined'&&SPRITE_BOUNDS[key]||[])[row*a.cols+f]||[0,0,cw,ch];bc.globalAlpha=alpha;bc.drawImage(a.image,f*cw+box[0],row*ch+box[1],box[2],box[3],(cw-box[2])/2,ch-box[3],box[2],box[3]);};
+ draw(frame,1-blend);draw(next,blend);bc.globalAlpha=1;bc.globalCompositeOperation='source-over';
+ const dw=sz*a.scale,dh=dw*ch/cw;cx.drawImage(a.canvas,-dw/2,sz*.48-dh,dw,dh);return true;
 }
 const HERO_ART={knight:'huntsman',archer:'archer',barbarian:'barbarian',healer:'healer',mage:'mage',rogue:'rogue',bard:'bard',alchemist:'alchemist'};
 function actorSprite(key,o,sz,still){if(o.lunge>0&&!(o.artLunge>0))o.artAttack=R.time;o.artLunge=o.lunge;const attack=!o.down&&!o.dead&&o.artAttack!=null&&R.time-o.artAttack<.57;return paintSprite(key,sz,attack,o.ph,still,o.artAttack);}
 function drawArtHero(h,sz){return actorSprite(HERO_ART[h.k],h,sz,h.down||h.st==='idle'&&R.trans<=0);}
-function spriteTop(key,y,sz){const a=GAME_ART[key];return a&&a.image.complete&&a.image.naturalWidth?y+sz*.48-sz*a.scale*(a.image.naturalHeight/a.rows)/(a.image.naturalWidth/a.cols):y-sz*.65;}
-function fitActorSize(key,y,sz){const a=GAME_ART[key],ratio=a&&a.image.complete&&a.image.naturalWidth?a.scale*(a.image.naturalHeight/a.rows)/(a.image.naturalWidth/a.cols)-.48:.65;return Math.min(sz,Math.max(12,(y-106)/ratio));}
+function spriteRatio(key){const a=GAME_ART[key];if(!a||!a.image.complete||!a.image.naturalWidth)return null;const cw=a.image.naturalWidth/a.cols,ch=a.image.naturalHeight/a.rows;const bounds=typeof SPRITE_BOUNDS==='undefined'?null:SPRITE_BOUNDS[key];const heights=bounds?(a.enemyRow==null?bounds:bounds.slice(a.enemyRow*4,a.enemyRow*4+4)).map(b=>b[3]):[ch];return a.scale*Math.max(...heights)/cw;}
+function spriteTop(key,y,sz){const ratio=spriteRatio(key);return ratio==null?y-sz*.65:y+sz*.48-sz*ratio;}
+function fitActorSize(key,y,sz){const ratio=(spriteRatio(key)==null?.65:spriteRatio(key)-.48);return Math.min(sz,Math.max(12,(y-106)/ratio));}
 function heroSize(h){return fitActorSize(HERO_ART[h.k],h.y,clamp(H*.13,26,40)*(1+.07*((S.heroes[h.k]||{}).evo||0)));}
 function heroTop(h){return spriteTop(HERO_ART[h.k],h.y,heroSize(h))-3;}
-function enemySize(e){return fitActorSize(/^(Elite )?(Hungry Rat|Angry Rat|Rat King)$/.test(e.name)?'rat':null,e.y,26*e.sz*U*clamp(H/300,.9,1.2));}
+function enemySize(e){return fitActorSize(enemyArtKey(e),e.y,26*e.sz*U*clamp(H/300,.9,1.2));}
 function enemyTop(e){return spriteTop(/^(Elite )?(Hungry Rat|Angry Rat|Rat King)$/.test(e.name)?'rat':null,e.y,enemySize(e))-3;}
 function drawSpeech(){
  const actors=R.team.filter(h=>!h.down).map(h=>({o:h,top:heroTop(h)})).concat(R.en.filter(e=>!e.dead&&e.x<W).map(e=>({o:e,top:enemyTop(e)})));
@@ -2706,7 +2731,7 @@ function drawSpeech(){
  const ceiling=Math.min(...actors.map(a=>a.top))-17;
  drawBubble(speaking.o.x,ceiling,speaking.o.bub,speaking.o.bubT);
 }
-function drawArtEnemy(e,sz){return /^(Elite )?(Hungry Rat|Angry Rat|Rat King)$/.test(e.name)&&actorSprite('rat',e,sz,e.dead||e.stun>0||e.root>0);}
+function drawArtEnemy(e,sz){return actorSprite(enemyArtKey(e),e,sz,e.dead||e.stun>0||e.root>0);}
 function setFont(sz){cx.font=Math.round(sz)+"px "+EMOJI_FONT}
 function render(){
  if(!cx)return;const rl=realmOf(S.stage),hz=H*.44;
@@ -2743,7 +2768,7 @@ function render(){
  if(R.buff.gold>0){cx.strokeStyle="rgba(255,211,74,.55)";cx.lineWidth=4;cx.strokeRect(6,6,W-12,H-12)}
 }
 function drawHero(h,sz){const ev=(S.heroes[h.k]&&S.heroes[h.k].evo)||0;sz=heroSize(h);
- const bob=R.trans>0||h.st==="idle"?Math.sin(R.time*(R.trans>0?14:8)+h.ph)*2:0;
+ const bob=HERO_ART[h.k]?Math.sin((R.artTime||0)*2.5+h.ph)*.35:R.trans>0||h.st==="idle"?Math.sin(R.time*6+h.ph):0;
  cx.fillStyle="rgba(0,0,0,.35)";cx.beginPath();cx.ellipse(h.x,h.y+sz*.45,sz*.45,sz*.14,0,0,6.28);cx.fill();
  cx.save();cx.translate(h.x,h.y+bob);
  if(h.down){cx.globalAlpha=.55;cx.rotate(1.3)}
@@ -2762,11 +2787,12 @@ function drawEnemy(e){
  cx.fillStyle="rgba(0,0,0,.35)";cx.beginPath();cx.ellipse(e.x,e.y+sz*.45,sz*.45,sz*.13,0,0,6.28);cx.fill();
  cx.save();cx.globalAlpha=a;cx.translate(e.x-e.lunge*8,e.y+bob);
  if(e.dead)cx.rotate((1-a)*1.5);
- if(e.flash>0){cx.shadowColor="#fff";cx.shadowBlur=14}
+ if(e.mini){cx.shadowColor='#d8b76b';cx.shadowBlur=9;}if(e.flash>0){cx.shadowColor='#fff';cx.shadowBlur=14}
  setFont(sz);cx.textAlign="center";cx.textBaseline="middle";
  if(e.burn>0){cx.shadowColor="#ff7a2f";cx.shadowBlur=12}
  if(e.slow>0||e.root>0){cx.shadowColor="#7fe6ff";cx.shadowBlur=10}
  if(!drawArtEnemy(e,sz))cx.fillText(e.e,0,0);cx.restore();cx.textBaseline="alphabetic";
+ if(e.mini&&!e.dead){cx.font='bold 9px Georgia';cx.fillStyle='#e4c780';cx.textAlign='center';cx.fillText('ELITE',e.x,enemyTop(e)-16);}
  if(e.stun>0){setFont(14);cx.fillText("💫",e.x,enemyTop(e)-16)}
  if(!e.dead&&(e.hp<e.mhp)){const bw=sz*.9,x=e.x-bw/2,y=enemyTop(e)-8;cx.fillStyle="rgba(0,0,0,.6)";cx.fillRect(x,y,bw,4);cx.fillStyle="#ff2fd0";cx.fillRect(x,y,bw*Math.max(0,e.hp/e.mhp),4)}
 }
@@ -2844,11 +2870,8 @@ function silhouette(type,hz,scroll,col,hMul,per,alpha,seed){
  cx.globalAlpha=1;
 }
 function drawBg(rl,hz){
- if(!S.camp&&areaIdx(S.stage)===0&&artWoods.complete&&artWoods.naturalWidth){
-  const scale=Math.max(W/artWoods.naturalWidth,H/artWoods.naturalHeight);
-  const iw=artWoods.naturalWidth*scale,ih=artWoods.naturalHeight*scale;
-  cx.drawImage(artWoods,(W-iw)/2,(H-ih)/2,iw,ih);return;
- }
+ const stageArt=!S.camp?STAGE_BACKGROUNDS[areaIdx(S.stage)]:null;
+ if(stageArt&&stageArt.complete&&stageArt.naturalWidth){const scale=Math.max(W/stageArt.naturalWidth,H/stageArt.naturalHeight),iw=stageArt.naturalWidth*scale,ih=stageArt.naturalHeight*scale;cx.drawImage(stageArt,(W-iw)/2,(H-ih)/2,iw,ih);return;}
  const P=pal(rl),th=rl.th||"cave",sc=R.scroll;
  const g=cx.createLinearGradient(0,0,0,hz+30);g.addColorStop(0,rl.bg[0]);g.addColorStop(1,P.far);cx.fillStyle=g;cx.fillRect(0,0,W,H);
  // stars / sun / moon
@@ -2874,6 +2897,7 @@ function drawBg(rl,hz){
  for(let i=0;i<7;i++){const span=W+120,x=((i*(span/7)+hh(i+rl.n.length)*30-sc*1.0)%span+span)%span-40,y=hz+(H-hz)*(.15+hh(i+33)*.8);cx.fillText(dec[(i+2)%dec.length],x,y)}
  cx.globalAlpha=1;
 }
+
 
 const PORTRAIT_KEYS=['knight','archer','barbarian','healer','mage','rogue','bard','alchemist'];
 function heroPortrait(k){const i=PORTRAIT_KEYS.indexOf(k);return i<0?CLS[k].e:`<span class="hero-portrait" role="img" aria-label="${CLS[k].hero}" style="--px:${(i%4)*100/3}%;--py:${i<4?0:100}%"></span>`;}

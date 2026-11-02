@@ -1,0 +1,65 @@
+{
+  "tool": "Built-in image generation",
+  "areas": [
+    {
+      "key": "cellar",
+      "scene": "moonlit ruined woodland cellar beneath the witch cottage, roots and stone cauldrons",
+      "units": [
+        "Hungry Rat: mangy brown rat",
+        "Cellar Spider: giant black spider",
+        "Dust Imp: small soot imp",
+        "Dust Golem: bulky animated dust stone golem",
+        "Gossip Bat: ragged giant bat",
+        "Mildew Blob: toxic green slime",
+        "The Cauldron BOSS: huge iron witch cauldron with monstrous claw feet and green boiling face"
+      ],
+      "background": "Use case: stylized-concept. Production landscape background 1536x1024 for Grimm Descent hand-painted premium dark fairytale side-view mobile battle game. moonlit ruined woodland cellar beneath the witch cottage, roots and stone cauldrons. Muted midnight teal moss and antique brass palette, rich atmospheric painted depth, layered arches and silhouettes. Bottom 50 percent quiet walkable flat ground for battle characters. No characters, no text, no UI. Clear readable landscape, painterly dark fantasy.",
+      "atlas": "Use case: stylized-concept. Production enemy sprite ATLAS for Grimm Descent dark fairytale game. Canvas 1536x2688 EXACTLY 4 columns and 7 rows, every cell 384x384 square, no gaps no borders no lettering. Each row has ONE different monster repeated in four animation poses: neutral, walking step, attack windup, strike. All face LEFT. Each complete character stays entirely in its cell with 12 percent margin, fixed scale and feet baseline within its row. Actual ALPHA TRANSPARENT background, no scenery no ground no haze. Premium hand-painted fantasy, crisp readable silhouettes midnight teal moss aged brass. Rows top to bottom EXACTLY: 1. Hungry Rat: mangy brown rat; 2. Cellar Spider: giant black spider; 3. Dust Imp: small soot imp; 4. Dust Golem: bulky animated dust stone golem; 5. Gossip Bat: ragged giant bat; 6. Mildew Blob: toxic green slime; 7. The Cauldron BOSS: huge iron witch cauldron with monstrous claw feet and green boiling face. Boss in final row uses same cell size, runtime scales it larger. Preserve creature identity across each row's four poses."
+    },
+    {
+      "key": "sewer",
+      "scene": "ancient mossy stone sewers, green canal, dripping arches, distant torchlight",
+      "units": [
+        "Gator in a Crown: reptilian alligator wearing tiny battered crown",
+        "Rat King: giant crowned rat tangled tail",
+        "Drain Dragon: slender green serpent dragon",
+        "Flush Phantom: pale water ghost",
+        "Drain Mosquito: giant blood mosquito",
+        "Sewer Mime: sinister masked mime in ragged stripes",
+        "The Fatberg BOSS: huge greasy sewer sludge monster with bones and crowns embedded"
+      ],
+      "background": "Use case: stylized-concept. Production landscape background 1536x1024 for Grimm Descent hand-painted premium dark fairytale side-view mobile battle game. ancient mossy stone sewers, green canal, dripping arches, distant torchlight. Muted midnight teal moss and antique brass palette, rich atmospheric painted depth, layered arches and silhouettes. Bottom 50 percent quiet walkable flat ground for battle characters. No characters, no text, no UI. Clear readable landscape, painterly dark fantasy.",
+      "atlas": "Use case: stylized-concept. Production enemy sprite ATLAS for Grimm Descent dark fairytale game. Canvas 1536x2688 EXACTLY 4 columns and 7 rows, every cell 384x384 square, no gaps no borders no lettering. Each row has ONE different monster repeated in four animation poses: neutral, walking step, attack windup, strike. All face LEFT. Each complete character stays entirely in its cell with 12 percent margin, fixed scale and feet baseline within its row. Actual ALPHA TRANSPARENT background, no scenery no ground no haze. Premium hand-painted fantasy, crisp readable silhouettes midnight teal moss aged brass. Rows top to bottom EXACTLY: 1. Gator in a Crown: reptilian alligator wearing tiny battered crown; 2. Rat King: giant crowned rat tangled tail; 3. Drain Dragon: slender green serpent dragon; 4. Flush Phantom: pale water ghost; 5. Drain Mosquito: giant blood mosquito; 6. Sewer Mime: sinister masked mime in ragged stripes; 7. The Fatberg BOSS: huge greasy sewer sludge monster with bones and crowns embedded. Boss in final row uses same cell size, runtime scales it larger. Preserve creature identity across each row's four poses."
+    },
+    {
+      "key": "goblin",
+      "scene": "gothic goblin bazaar at night, crooked stalls and hanging amber lanterns",
+      "units": [
+        "Goblin Cashier: green goblin with money pouch",
+        "Peddler Goblin: lanky goblin burdened with wares",
+        "Runaway Cart: possessed wooden cart with teeth",
+        "Gate-Keeping Troll: heavy stone troll in rusty armor",
+        "Sample Witch: crooked witch holding cursed food tray",
+        "Feast-Hall Ogre: fat ogre wielding cleaver",
+        "Gerald the Gate-Goblin BOSS: huge green goblin overlord in battered brass armor and red cape"
+      ],
+      "background": "Use case: stylized-concept. Production landscape background 1536x1024 for Grimm Descent hand-painted premium dark fairytale side-view mobile battle game. gothic goblin bazaar at night, crooked stalls and hanging amber lanterns. Muted midnight teal moss and antique brass palette, rich atmospheric painted depth, layered arches and silhouettes. Bottom 50 percent quiet walkable flat ground for battle characters. No characters, no text, no UI. Clear readable landscape, painterly dark fantasy.",
+      "atlas": "Use case: stylized-concept. Production enemy sprite ATLAS for Grimm Descent dark fairytale game. Canvas 1536x2688 EXACTLY 4 columns and 7 rows, every cell 384x384 square, no gaps no borders no lettering. Each row has ONE different monster repeated in four animation poses: neutral, walking step, attack windup, strike. All face LEFT. Each complete character stays entirely in its cell with 12 percent margin, fixed scale and feet baseline within its row. Actual ALPHA TRANSPARENT background, no scenery no ground no haze. Premium hand-painted fantasy, crisp readable silhouettes midnight teal moss aged brass. Rows top to bottom EXACTLY: 1. Goblin Cashier: green goblin with money pouch; 2. Peddler Goblin: lanky goblin burdened with wares; 3. Runaway Cart: possessed wooden cart with teeth; 4. Gate-Keeping Troll: heavy stone troll in rusty armor; 5. Sample Witch: crooked witch holding cursed food tray; 6. Feast-Hall Ogre: fat ogre wielding cleaver; 7. Gerald the Gate-Goblin BOSS: huge green goblin overlord in battered brass armor and red cape. Boss in final row uses same cell size, runtime scales it larger. Preserve creature identity across each row's four poses."
+    },
+    {
+      "key": "crypt",
+      "scene": "candlelit crypt library, dusty shelves and stone tombs, blue ghostly light",
+      "units": [
+        "Skeleton Librarian: skeleton with book and tattered robe",
+        "Zombie Scribe: ragged zombie holding quill",
+        "Shushing Ghost: spectral librarian",
+        "Angry Dictionary: flying fanged book",
+        "Late-Fee Vampire: elegant vampire in wine cape",
+        "Huge Bookworm: enormous segmented worm",
+        "The Library Warden BOSS: towering skeletal armored librarian with chained grimoire and bone staff"
+      ],
+      "background": "Use case: stylized-concept. Production landscape background 1536x1024 for Grimm Descent hand-painted premium dark fairytale side-view mobile battle game. candlelit crypt library, dusty shelves and stone tombs, blue ghostly light. Muted midnight teal moss and antique brass palette, rich atmospheric painted depth, layered arches and silhouettes. Bottom 50 percent quiet walkable flat ground for battle characters. No characters, no text, no UI. Clear readable landscape, painterly dark fantasy.",
+      "atlas": "Use case: stylized-concept. Production enemy sprite ATLAS for Grimm Descent dark fairytale game. Canvas 1536x2688 EXACTLY 4 columns and 7 rows, every cell 384x384 square, no gaps no borders no lettering. Each row has ONE different monster repeated in four animation poses: neutral, walking step, attack windup, strike. All face LEFT. Each complete character stays entirely in its cell with 12 percent margin, fixed scale and feet baseline within its row. Actual ALPHA TRANSPARENT background, no scenery no ground no haze. Premium hand-painted fantasy, crisp readable silhouettes midnight teal moss aged brass. Rows top to bottom EXACTLY: 1. Skeleton Librarian: skeleton with book and tattered robe; 2. Zombie Scribe: ragged zombie holding quill; 3. Shushing Ghost: spectral librarian; 4. Angry Dictionary: flying fanged book; 5. Late-Fee Vampire: elegant vampire in wine cape; 6. Huge Bookworm: enormous segmented worm; 7. The Library Warden BOSS: towering skeletal armored librarian with chained grimoire and bone staff. Boss in final row uses same cell size, runtime scales it larger. Preserve creature identity across each row's four poses."
+    }
+  ]
+}
