@@ -1,0 +1,377 @@
+{
+  "description": "Actual-wave simulations with Auto Fairy skill casting enabled; levels 35, 55 and 75, with full high-rarity enhanced gear on level-75 parties. Stage numbers match the game display.",
+  "cases": [
+    {
+      "level": 35,
+      "minHp": 96,
+      "deaths": 0,
+      "wipe": false,
+      "clear": true,
+      "seconds": 30,
+      "firstDeath": null,
+      "campaign": 1,
+      "displayedStage": 31
+    },
+    {
+      "level": 35,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 63,
+      "firstDeath": 39.13333333333333,
+      "campaign": 1,
+      "displayedStage": 56
+    },
+    {
+      "level": 35,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 21,
+      "firstDeath": 12.666666666666666,
+      "campaign": 1,
+      "displayedStage": 60
+    },
+    {
+      "level": 35,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 12,
+      "firstDeath": 4.733333333333333,
+      "campaign": 1,
+      "displayedStage": 64
+    },
+    {
+      "level": 35,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 10,
+      "firstDeath": 3.933333333333333,
+      "campaign": 1,
+      "displayedStage": 68
+    },
+    {
+      "level": 35,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 12,
+      "firstDeath": 5,
+      "campaign": 1,
+      "displayedStage": 101
+    },
+    {
+      "level": 55,
+      "minHp": 96,
+      "deaths": 0,
+      "wipe": false,
+      "clear": true,
+      "seconds": 25,
+      "firstDeath": null,
+      "campaign": 1,
+      "displayedStage": 31
+    },
+    {
+      "level": 55,
+      "minHp": 83,
+      "deaths": 0,
+      "wipe": false,
+      "clear": true,
+      "seconds": 58,
+      "firstDeath": null,
+      "campaign": 1,
+      "displayedStage": 56
+    },
+    {
+      "level": 55,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 24,
+      "firstDeath": 17.133333333333333,
+      "campaign": 1,
+      "displayedStage": 60
+    },
+    {
+      "level": 55,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 19,
+      "firstDeath": 10.166666666666666,
+      "campaign": 1,
+      "displayedStage": 64
+    },
+    {
+      "level": 55,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 11,
+      "firstDeath": 4.466666666666667,
+      "campaign": 1,
+      "displayedStage": 68
+    },
+    {
+      "level": 55,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 12,
+      "firstDeath": 5.133333333333334,
+      "campaign": 1,
+      "displayedStage": 101
+    },
+    {
+      "level": 75,
+      "minHp": 96,
+      "deaths": 0,
+      "wipe": false,
+      "clear": true,
+      "seconds": 27,
+      "firstDeath": null,
+      "campaign": 1,
+      "displayedStage": 31
+    },
+    {
+      "level": 75,
+      "minHp": 96,
+      "deaths": 0,
+      "wipe": false,
+      "clear": true,
+      "seconds": 45,
+      "firstDeath": null,
+      "campaign": 1,
+      "displayedStage": 56
+    },
+    {
+      "level": 75,
+      "minHp": 89,
+      "deaths": 0,
+      "wipe": false,
+      "clear": true,
+      "seconds": 46,
+      "firstDeath": null,
+      "campaign": 1,
+      "displayedStage": 60
+    },
+    {
+      "level": 75,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 34,
+      "firstDeath": 13.5,
+      "campaign": 1,
+      "displayedStage": 64
+    },
+    {
+      "level": 75,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 15,
+      "firstDeath": 6.833333333333333,
+      "campaign": 1,
+      "displayedStage": 68
+    },
+    {
+      "level": 75,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 12,
+      "firstDeath": 5.133333333333334,
+      "campaign": 1,
+      "displayedStage": 101
+    },
+    {
+      "level": 35,
+      "minHp": 100,
+      "deaths": 0,
+      "wipe": false,
+      "clear": true,
+      "seconds": 30,
+      "firstDeath": null,
+      "campaign": 2,
+      "displayedStage": 31
+    },
+    {
+      "level": 35,
+      "minHp": 0,
+      "deaths": 9,
+      "wipe": true,
+      "seconds": 69,
+      "firstDeath": 41.96666666666667,
+      "campaign": 2,
+      "displayedStage": 56
+    },
+    {
+      "level": 35,
+      "minHp": 0,
+      "deaths": 9,
+      "wipe": true,
+      "seconds": 21,
+      "firstDeath": 12.5,
+      "campaign": 2,
+      "displayedStage": 60
+    },
+    {
+      "level": 35,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 10,
+      "firstDeath": 5.733333333333333,
+      "campaign": 2,
+      "displayedStage": 64
+    },
+    {
+      "level": 35,
+      "minHp": 0,
+      "deaths": 9,
+      "wipe": true,
+      "seconds": 10,
+      "firstDeath": 3.533333333333333,
+      "campaign": 2,
+      "displayedStage": 68
+    },
+    {
+      "level": 35,
+      "minHp": 0,
+      "deaths": 9,
+      "wipe": true,
+      "seconds": 12,
+      "firstDeath": 5.633333333333334,
+      "campaign": 2,
+      "displayedStage": 101
+    },
+    {
+      "level": 55,
+      "minHp": 100,
+      "deaths": 0,
+      "wipe": false,
+      "clear": true,
+      "seconds": 27,
+      "firstDeath": null,
+      "campaign": 2,
+      "displayedStage": 31
+    },
+    {
+      "level": 55,
+      "minHp": 89,
+      "deaths": 0,
+      "wipe": false,
+      "clear": true,
+      "seconds": 55,
+      "firstDeath": null,
+      "campaign": 2,
+      "displayedStage": 56
+    },
+    {
+      "level": 55,
+      "minHp": 0,
+      "deaths": 9,
+      "wipe": true,
+      "seconds": 29,
+      "firstDeath": 17.566666666666666,
+      "campaign": 2,
+      "displayedStage": 60
+    },
+    {
+      "level": 55,
+      "minHp": 0,
+      "deaths": 9,
+      "wipe": true,
+      "seconds": 19,
+      "firstDeath": 9.866666666666667,
+      "campaign": 2,
+      "displayedStage": 64
+    },
+    {
+      "level": 55,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 10,
+      "firstDeath": 5.566666666666666,
+      "campaign": 2,
+      "displayedStage": 68
+    },
+    {
+      "level": 55,
+      "minHp": 0,
+      "deaths": 9,
+      "wipe": true,
+      "seconds": 12,
+      "firstDeath": 5.633333333333334,
+      "campaign": 2,
+      "displayedStage": 101
+    },
+    {
+      "level": 75,
+      "minHp": 100,
+      "deaths": 0,
+      "wipe": false,
+      "clear": true,
+      "seconds": 26,
+      "firstDeath": null,
+      "campaign": 2,
+      "displayedStage": 31
+    },
+    {
+      "level": 75,
+      "minHp": 99,
+      "deaths": 0,
+      "wipe": false,
+      "clear": true,
+      "seconds": 46,
+      "firstDeath": null,
+      "campaign": 2,
+      "displayedStage": 56
+    },
+    {
+      "level": 75,
+      "minHp": 96,
+      "deaths": 0,
+      "wipe": false,
+      "clear": true,
+      "seconds": 43,
+      "firstDeath": null,
+      "campaign": 2,
+      "displayedStage": 60
+    },
+    {
+      "level": 75,
+      "minHp": 0,
+      "deaths": 9,
+      "wipe": true,
+      "seconds": 25,
+      "firstDeath": 11.733333333333333,
+      "campaign": 2,
+      "displayedStage": 64
+    },
+    {
+      "level": 75,
+      "minHp": 0,
+      "deaths": 8,
+      "wipe": true,
+      "seconds": 15,
+      "firstDeath": 7.566666666666666,
+      "campaign": 2,
+      "displayedStage": 68
+    },
+    {
+      "level": 75,
+      "minHp": 0,
+      "deaths": 9,
+      "wipe": true,
+      "seconds": 12,
+      "firstDeath": 5.633333333333334,
+      "campaign": 2,
+      "displayedStage": 101
+    }
+  ]
+}

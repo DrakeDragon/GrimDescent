@@ -68,7 +68,9 @@ const msOf=k=>S.heroes[k]?Math.floor(S.heroes[k].lvl/10):0;
 const mtOf=k=>S.heroes[k]?mileTotals(k,S.heroes[k].lvl):{sp:0,cdr:0,crit:0,spd:0,hp:0,aura:0,dmg:0,gold:0,regen:0};
 const evoM=k=>1+.25*(S.heroes[k]?S.heroes[k].evo||0:0)+Math.min(3,mtOf(k).aura);
 const spPow=k=>{const h=S.heroes[k];return h.sp>0?CLS[k].sp.pow*Math.pow(1.1,h.sp-1)*(1+.3*(h.evo||0)):0};
+function activeHeroKeys(roster=false){return S.dep.filter(k=>{if(roster||!R.inGame)return true;const h=(R.team||[]).find(x=>x.k===k);return !h||!h.down;});}
 function recalc(){
+ const deployed=activeHeroKeys();
  const ach=Object.keys(S.ach).length;
  C.glob=(1+0.06*S.soTotal)*(1+0.02*ach)*(1+0.2*perk("power"))*(1+0.1*gemU("gpower"));
  const sl=L("sword");
@@ -77,31 +79,33 @@ function recalc(){
  C.auto=Math.min(15,3+0.5*L("auto")+0.5*perk("autop"));C.armor=Math.min(.6,.01*L("armor"));C.luck=1+0.1*L("luck")+0.15*perk("luck");
  const pb=petBonus();C.pet=pb;C.umb=Math.min(.85,0.03*L("umb")+0.05*perk("sky")+pb.umb);
  let aSpd=0.01*L("haste"),aGold=0,dr=0,reg=0;
- for(const k of S.dep){const p=CLS[k].pass;if(!p)continue;aSpd+=p.spd||0;aGold+=p.gold||0;dr+=p.dr||0;reg+=p.regen||0}
+ for(const k of deployed){const p=CLS[k].pass;if(!p)continue;aSpd+=p.spd||0;aGold+=p.gold||0;dr+=p.dr||0;reg+=p.regen||0}
  const SY={};C.links=[];
- for(const k of S.dep){const y=SYN[k],z={dmg:0,spd:0,hp:0,crit:0,gold:0,regen:0,cdr:0};SY[k]=z;
-  for(const j of S.dep){if(j===k)continue;const a=SYN[j].aura;if(a.to==="all"||y.tags.includes(a.to)){const av=a.v*evoM(j);z[a.s]+=av;C.links.push({t:"aura",from:j,to:k,s:a.s,v:av})}}
-  const cb=y.combo;if(S.dep.some(j=>j!==k&&SYN[j].tags.includes(cb.w))){const cv=cb.v*evoM(k);z[cb.s]+=cv;C.links.push({t:"combo",from:k,to:k,s:cb.s,v:cv})}}
+ for(const k of deployed){const y=SYN[k],z={dmg:0,spd:0,hp:0,crit:0,gold:0,regen:0,cdr:0};SY[k]=z;
+  for(const j of deployed){if(j===k)continue;const a=SYN[j].aura;if(a.to==="all"||y.tags.includes(a.to)){const av=a.v*evoM(j);z[a.s]+=av;C.links.push({t:"aura",from:j,to:k,s:a.s,v:av})}}
+  const cb=y.combo;if(deployed.some(j=>j!==k&&SYN[j].tags.includes(cb.w))){const cv=cb.v*evoM(k);z[cb.s]+=cv;C.links.push({t:"combo",from:k,to:k,s:cb.s,v:cv})}}
  C.syn=SY;let sgold=0;
  C.dr=Math.min(.5,dr);C.regen=(reg+0.002*L("regen"))*0.5;C.aSpd=aSpd;
  C.cdr=Math.min(.7,0.01*L("cdr")+0.02*perk("cdrp"));C.disc=Math.max(.6,1-0.01*L("disc"));C.bossM=1+0.05*L("boss")+0.25*perk("bossp");C.lootq=1+0.02*L("lootq");
  let gg=0;C.h={};
- for(const k in S.heroes){const h=S.heroes[k];h.at=1+Math.floor(h.lvl/2);h.sp=Math.floor(h.lvl/5);const ne=EVO_REQ.filter(r=>h.lvl>=r).length;if(ne>(h.evo||0)){h.evo=ne;if(S.dep.includes(k))evoFx(k)}else h.evo=ne}
- let msum=0;for(const k of S.dep)msum+=msOf(k);C.msMul=1+.015*msum;
+ for(const k in S.heroes){const h=S.heroes[k];h.at=1+Math.floor(h.lvl/2);h.sp=Math.floor(h.lvl/5);const ne=EVO_REQ.filter(r=>h.lvl>=r).length;if(ne>(h.evo||0)){h.evo=ne;if(deployed.includes(k))evoFx(k)}else h.evo=ne}
+ let msum=0;for(const k of deployed)msum+=msOf(k);C.msMul=1+.015*msum;
  for(const k in S.heroes){const h=S.heroes[k],c=CLS[k],g=gearOf(h);
   const z=Object.assign({},SY[k]||{dmg:0,spd:0,hp:0,crit:0,gold:0,regen:0,cdr:0});{const mt=mtOf(k);z.dmg+=mt.dmg;z.spd+=mt.spd;z.hp+=mt.hp;z.crit+=mt.crit;z.gold+=mt.gold;z.regen+=mt.regen;z.cdr+=mt.cdr}
   const hit=C.msMul*Math.pow(2,h.evo||0)*(1+Math.min(3,z.dmg))*2.5*c.dps*c.iv*Math.pow(1.06,h.lvl-1)*Math.pow(2,Math.floor(h.lvl/25))*Math.pow(1.06,h.at-1)*(1+g.atk)*C.glob;
   const hp=Math.pow(1.6,h.evo||0)*40*c.hp*Math.pow(1.15,h.lvl-1)*(1+g.hp)*(1+Math.min(3,z.hp))*Math.pow(1.08,L("vit"))*(1+0.2*perk("hpp"));
   const spd=1+Math.min(2,g.spd)+aSpd+pb.spd+Math.min(1.5,z.spd);
   C.h[k]={hit,hp,spd,iv:c.iv/spd,crit:Math.min(.8,C.critCh+g.crit+pb.crit+z.crit),dps:hit/(c.iv/spd),g,sp:spPow(k)*(1+mtOf(k).sp),regen:Math.min(.015,z.regen),cdr:Math.min(.5,z.cdr)};
-  if(S.dep.includes(k)){gg+=g.gold;sgold+=z.gold}}
+  if(deployed.includes(k)){gg+=g.gold;sgold+=z.gold}}
  C.goldBase=(1+0.06*L("gold"))*(1+gg)*(1+0.25*perk("pay"))*(1+0.1*S.soTotal)*(1+0.1*gemU("gwallet"))*(1+pb.gold)*(1+aGold)*(1+Math.min(2,sgold))*0.6;
- C.cryM=1.5+0.1*SKL("cry");C.goldBuff=2+0.2*SKL("cash");
- let a=0,n=0,dh=0;for(const k of S.dep){a+=C.h[k].hit;dh+=C.h[k].dps;n++}R.aref=n?a/n:1;
+ C.cryM=1.35;C.goldBuff=1.5;
+ let a=0,n=0,dh=0;for(const k of deployed){a+=C.h[k].hit;dh+=C.h[k].dps;n++}R.aref=S.dep.length?a/S.dep.length:0;
  C.tap=Math.max(C.glob,0.05*dh)*C.tapMul;
  if(typeof syncHeroes==="function")syncHeroes();
 }
-function teamDps(){let d=0;for(const k of S.dep)if(C.h[k])d+=C.h[k].dps;return d+C.auto*C.tap*(1+C.critCh*(C.critMul-1))}
+function basicPartyDps(roster=false){let d=0;for(const k of activeHeroKeys(roster)){const h=(R.team||[]).find(x=>x.k===k),st=C.h[k];if(st)d+=st.dps*(!roster&&h&&typeof heroMod==='function'?heroMod(h)*heroSpd(h):1);}return d;}
+function activeTapPower(roster=false){const keys=activeHeroKeys(roster);return keys.length?Math.max(C.glob,.05*basicPartyDps(roster))*C.tapMul:0;}
+function teamDps(roster=false){return basicPartyDps(roster)+C.auto*activeTapPower(roster)*(1+C.critCh*(C.critMul-1));}
 function bulkCost(b,g,l,n){return b*Math.pow(g,l)*(Math.pow(g,n)-1)/(g-1)}
 function maxAfford(b,g,l,gold){const c=b*Math.pow(g,l);if(gold<c)return 0;return Math.floor(Math.log(gold*(g-1)/c+1)/Math.log(g))}
 function skCost(sk,l){return Math.max(50,floorHP(sk.u)*20)*Math.pow(sk.g,l)}
@@ -153,7 +157,8 @@ function switchCamp(c){
  R.buff={cry:0,gold:0,haste:0};R.cd={};R.lastArea=-1;R.mapBase=null;R.team=[];R.lastClearedStage=null;R.wipeT=0;R.defeatPending=false;recalc();buildTeam();startStage();onAreaChanged();saveGame();return true}
 function newCampState(c){const n=newState(),o={};for(const f of CAMP_F)o[f]=n[f];const v=campHero('van',c||0);o.heroes={[v]:newHero()};o.seat={van:v};o.dep=[v];return o}
 function autoManage(){
- if(!S.autoMgr||S.max<10||!R.inGame||R.modalPause)return;
+ if(!S.autoMgr||S.max<10||!R.inGame||R.modalPause||R.defeatPending)return;
+ if(S.set.autoequip)equipBestFromBag();
  for(let n=0;n<8;n++){
   for(const id of SLOT_ORDER)if(canUnlockSlot(id)&&S.gold>=slotHeroCost(id)){unlockSlot(id);break}
   let best=null,bc=1e300;
@@ -250,6 +255,13 @@ function addBag(it){
   if(sellVal(w)<sellVal(it)){S.bag.splice(wi,1);S.gold+=sellVal(w);S.stats.sold++;S.bag.push(it)}else{S.gold+=sellVal(it);S.stats.sold++}return}
  S.bag.push(it);
 }
+function equipBestFromBag(force=false){
+ const signature=()=>S.dep.join(',')+'|'+S.bag.map(i=>i.id+':'+i.lv).join(',')+'|'+S.dep.map(k=>SLOTS.map(sl=>{const i=S.heroes[k].gear[sl];return i?i.id+':'+i.lv:'-';}).join(',')).join(';');
+ const before=signature();R.lastBagSales=0;if(!force&&R.bagEquipKey===before)return 0;let changed=0;
+ // Work from best to worst and give each relic to the deployed hero with the largest improvement.
+ for(const it of S.bag.slice().sort((a,b)=>iscore(b)-iscore(a))){const k=bestHeroFor(it);if(!k)continue;const index=S.bag.findIndex(x=>x.id===it.id);if(index<0)continue;S.bag.splice(index,1);const old=S.heroes[k].gear[it.slot];S.heroes[k].gear[it.slot]=it;if(old)S.bag.push(old);changed++;}
+ if(changed)recalc();if(S.set.autosell)R.lastBagSales=sellOutclassedLoot().count;R.bagEquipKey=signature();if((changed||R.lastBagSales)&&typeof refreshTab==="function")refreshTab("gear");return changed;
+}
 function findItem(id){let it=S.bag.find(b=>b.id===id);if(it)return{it,loc:"bag"};for(const k in S.heroes)for(const s in S.heroes[k].gear){const g=S.heroes[k].gear[s];if(g&&g.id===id)return{it:g,loc:"hero",k}}return null}
 function equipItem(k,id){const i=S.bag.findIndex(b=>b.id===id);if(i<0||!S.heroes[k])return;const it=S.bag[i],h=S.heroes[k],cur=h.gear[it.slot];S.bag.splice(i,1);h.gear[it.slot]=it;if(cur)S.bag.push(cur);recalc();AU.play("ui")}
 function unequipItem(k,slot){const h=S.heroes[k];if(!h||!h.gear[slot]||S.bag.length>=30)return false;S.bag.push(h.gear[slot]);h.gear[slot]=null;recalc();return true}
@@ -302,7 +314,7 @@ function doRestructure(){
  recalc();buildTeam();startStage();onAreaChanged();saveGame();return true;
 }
 function offlineGain(sec){
- const cap=(2+2*perk("tele"))*3600;sec=Math.min(sec,cap);const dps=teamDps();const from=S.stage;
+ const cap=(2+2*perk("tele"))*3600;sec=Math.min(sec,cap);const dps=teamDps(true);const from=S.stage;
  if(dps<=0)return{gold:0,sec,from,to:from,chests:[]};
  let t=sec*0.25,g=S.stage,gold=0,chests=[],n=0;
  while(t>0&&n<3000){
@@ -362,4 +374,5 @@ function buyGem(id){
  if(id==="gso"){S.so+=8;S.soTotal+=8;recalc();return{ok:1}}
  S.gemUp[id]=l+1;recalc();return{ok:1};
 }
+
 

@@ -36,25 +36,22 @@ const buyBtn=(act,id,cost,extra,label)=>`<button class="buy ${S.gold>=cost?"can"
 
 /* ---------- hud ---------- */
 function updHud(){
- $("#gold").textContent=fmt(S.gold);$("#dps").textContent=fmt(teamDps())+" dmg/s";
+ $("#gold").textContent=fmt(S.gold);$("#dps").textContent=fmt(teamDps())+" active dmg/s · "+activeHeroKeys().length+"/"+S.dep.length;
  $("#soHud").innerHTML=S.soTotal?uiIcon(19)+" "+S.soTotal:"";
 }
+function skillbarSignature(){return SLOT_ORDER.map(id=>{const k=S.seat[id],h=k&&S.heroes[k];return k+':'+(h?h.lvl:0);}).join('|');}
 function renderSkillbar(){
- $("#skillbar").innerHTML=SKS.map(s=>{const l=SKL(s.id),lock=S.max<s.u||l<1;return`<button class="sk ${lock?"locked":""}" data-act="skill" data-id="${s.id}"><i>${s.i}</i><div class="cdo"></div><em>${l?"Lv"+l:"🔒"}</em></button>`}).join("");polishUi($("#skillbar"));
+ $('#skillbar').innerHTML=SLOT_ORDER.map(id=>{const k=S.seat[id],h=k&&S.heroes[k],c=k&&CLS[k];return '<button class="sk hero-skill '+(!h||h.sp<1?'locked':'')+'" data-act="skill" data-id="'+(k||id)+'" title="'+(c?c.hero+' — '+c.sp.n:SLOT_BY_ID[id].n)+'">'+(c?'<i>'+heroPortrait(k)+'</i><b>'+shortN(c.hero)+'</b><em>'+ (h.sp?'Special '+h.sp:'Hero Lv 5')+'</em>':'<i>'+uiIcon(14)+'</i><b>'+SLOT_BY_ID[id].n+'</b><em>Seat locked</em>')+'<div class="cdo"></div></button>';}).join('');R.skillbarSignature=skillbarSignature();updSkillCd();
 }
 function updSkillCd(){
- SKS.forEach(s=>{const b=$('.sk[data-id="'+s.id+'"]');if(!b)return;const cd=R.cd[s.id]||0,o=b.querySelector(".cdo"),l=SKL(s.id);
-  o.style.height=cd>0?Math.min(100,cd/s.cd*100)+"%":"0";o.textContent=cd>0?Math.ceil(cd):"";
-  const act=(s.id==="cry"&&R.buff.cry>0)||(s.id==="cash"&&R.buff.gold>0);
-  b.classList.toggle("ready",l>0&&cd<=0);b.classList.toggle("active",act);b.classList.toggle("locked",l<1)})
+ if(R.skillbarSignature!==skillbarSignature()){renderSkillbar();return;}
+ for(const id of SLOT_ORDER){const k=S.seat[id],b=$('.sk[data-id="'+(k||id)+'"]');if(!b)continue;const h=(R.team||[]).find(x=>x.k===k),owned=k&&S.heroes[k],cd=h?h.scd:0,locked=!owned||owned.sp<1,down=!!h&&h.down,o=b.querySelector('.cdo');
+ o.style.height=cd>0?Math.min(100,cd/heroSkillCooldown(k)*100)+'%':'0';o.textContent=down?'FALLEN':locked?'':cd>0?Math.ceil(cd):'';if(down)o.style.height='100%';
+ b.classList.toggle('ready',!locked&&!down&&cd<=0);b.classList.toggle('fallen',down);b.classList.toggle('locked',locked);b.setAttribute('aria-label',k?CLS[k].hero+': '+CLS[k].sp.n+(down?', fallen':cd>0?', '+Math.ceil(cd)+' seconds':', ready'):SLOT_BY_ID[id].n+' seat locked');}
 }
-ACT.skill=d=>{const sk=SKS.find(s=>s.id===d.id);if(SKL(d.id)<1){if(S.max<sk.u){toast("Unlocks at stage "+(sk.u+1),"bad")}else openSkill(d.id);return}
- if(!useSkill(d.id))AU.play("err")};
-function openSkill(id){
- const sk=SKS.find(s=>s.id===id),l=SKL(id),c=skCost(sk,l);
- modal(`<div class="mtitle">${sk.i} ${sk.n}</div><p class="mp">${sk.d(Math.max(1,l))}</p><p class="mp">Cooldown ${sk.cd}s${sk.dur?" · lasts "+sk.dur+"s":""}</p><div class="mbtns"><button class="btn ghost" data-act="close">Close</button>${S.max>=sk.u?`<button class="btn ${S.gold>=c?"gold":""}" data-act="skUp" data-id="${id}">${l?"Upgrade":"Learn"} 🪙 ${fmt(c)}</button>`:""}</div>`)
-}
-ACT.skUp=d=>{const sk=SKS.find(s=>s.id===d.id),l=SKL(d.id),c=skCost(sk,l);if(S.gold<c||S.max<sk.u){AU.play("err");return}S.gold-=c;S.sk[d.id]=l+1;recalc();AU.play("level");renderSkillbar();renderTab()};
+ACT.skill=d=>{const k=d.id;if(!CLS[k]||!S.heroes[k]){toast('Unlock this formation seat in Heroes.','memo');return;}if(S.heroes[k].sp<1){openSkill(k);return;}if(!useHeroSkill(k)){const h=(R.team||[]).find(x=>x.k===k);toast(h&&h.down?'A fallen hero cannot use their special.':'The skill needs a ready hero and a valid battle target.','memo');}updSkillCd();};
+function openSkill(k){const c=CLS[k],h=S.heroes[k];if(!c)return;modal('<div class="hdet"><div class="big">'+heroPortrait(k)+'</div><div class="mtitle">'+c.sp.n+'</div><div class="msub">'+c.hero+' · Special '+(h?h.sp:0)+'</div><p class="mp">'+c.sp.d.replace('POW','hero power')+'</p><p class="mp">Unlocks at hero level 5 and improves with hero upgrades. Cooldown '+heroSkillCooldown(k).toFixed(1)+'s. Manual activation and Auto Fairy share this timer. A fallen hero cannot cast.</p></div><div class="mbtns"><button class="btn" data-act="close">Close</button></div>');}
+ACT.skInfo=d=>openSkill(d.id);
 
 /* ---------- affordability dots ---------- */
 function updAfford(){
@@ -81,16 +78,16 @@ ACT.qty=d=>{S.buyQty=d.q==="max"?"max":+d.q;AU.play("ui");renderTab()};
 /* ---------- Orders tab ---------- */
 function qtyBar(){return`<div class="qty">${[1,10,"max"].map(q=>`<button class="${S.buyQty===q?"on":""}" data-act="qty" data-q="${q}">${q==="max"?"MAX":"×"+q}</button>`).join("")}</div>`}
 function renderOrders(){
- let h=mgrBar()+`<div class="hdr"><div class="sec" style="margin:0">Spells</div></div><div class="ggrid">`;
- h+=SKS.map(s=>{const l=SKL(s.id),lock=S.max<s.u,c=skCost(s,l);
-  return`<div class="gcard ${lock?"lk":""}" data-act="skInfo" data-id="${s.id}"><i>${lock?"🔒":s.i}</i><b>${s.n}</b><em>${lock?"Stage "+(s.u+1):(l?"Lv "+l:"New")}</em>${lock?"":`<button class="gbuy ${S.gold>=c?"can":""}" data-act="skUp" data-id="${s.id}" data-cost="${c}">${l?"⬆":"LEARN"} 🪙${fmt(c)}</button>`}</div>`}).join("")+`</div>`;
+ let h=mgrBar()+'<div class="sec">Eight hero specials</div><div class="ggrid hero-special-cards">';
+ h+=SLOT_ORDER.map(id=>{const k=S.seat[id]||campHero(id),c=CLS[k],owned=S.seat[id]&&S.heroes[k];return '<button class="gcard '+(!owned?'lk':'')+'" data-act="skInfo" data-id="'+k+'"><i>'+heroPortrait(k)+'</i><b>'+c.sp.n+'</b><em>'+c.hero+'</em><small>'+(!owned?'Unlock '+SLOT_BY_ID[id].n:owned.sp?'Special '+owned.sp+' · '+heroSkillCooldown(k).toFixed(1)+'s':'Unlocks at hero Lv 5')+'</small></button>';}).join('')+'</div><div class="hint">One special per formation seat. Upgrade the hero to improve it. Use the portrait buttons below the battlefield, or enable Auto Fairy to cast ready skills when they have a valid target.</div>';
+
  h+=`<div class="hdr"><div class="sec" style="margin:8px 0 0">Charms & Boons</div>${qtyBar()}</div><div class="ggrid">`;
  h+=UPS.map(u=>{const l=L(u.id),maxed=u.max!==undefined&&l>=u.max,n=maxed?0:buyN(u,l),c=maxed?0:bulkCost(u.b,u.g,l,n);
   return`<div class="gcard" data-act="upInfo" data-id="${u.id}"><i>${u.i}</i><b>${u.n}</b><em>Lv ${l}</em>${maxed?'<div class="gmax">MAX</div>':`<button class="gbuy ${S.gold>=c?"can":""}" data-act="up" data-id="${u.id}" data-cost="${c}">${n>1?"×"+n+" ":"⬆ "}🪙${fmt(c)}</button>`}</div>`}).join("")+`</div>`;
  return h+`<div class="hint">Tap a card for details. Tap the gold button to buy.</div>`;
 }
 ACT.upInfo=d=>{const u=UPS.find(x=>x.id===d.id),l=L(u.id);AU.play("ui");modal(`<div class="hdet"><div class="big">${u.i}</div><div class="mtitle">${u.n}</div><div class="msub">Level ${l}${u.max!==undefined?" / "+u.max:""}</div><p class="mp">${u.d(l)}${l<(u.max===undefined?1e9:u.max)?"<br>Next: "+u.d(l+1):""}</p></div><div class="mbtns"><button class="btn" data-act="close">Close</button></div>`)};
-ACT.skInfo=d=>{const s=SKS.find(x=>x.id===d.id),l=SKL(s.id);AU.play("ui");modal(`<div class="hdet"><div class="big">${s.i}</div><div class="mtitle">${s.n}</div><div class="msub">${l?"Level "+l:"Not learned"} · Cooldown ${s.cd}s${s.dur?" · lasts "+s.dur+"s":""}</div><p class="mp">${s.d(Math.max(1,l))}${l?"<br>Next: "+s.d(l+1):""}</p></div><div class="mbtns"><button class="btn" data-act="close">Close</button></div>`)};
+
 ACT.up=d=>{const u=UPS.find(x=>x.id===d.id),l=L(u.id);if(u.max!==undefined&&l>=u.max)return;const n=buyN(u,l),c=bulkCost(u.b,u.g,l,n);if(S.gold<c){AU.play("err");return}S.gold-=c;S.up[u.id]=l+n;recalc();AU.play("level");renderTab()};
 
 /* ---------- Heroes tab (formation) ---------- */
@@ -101,7 +98,7 @@ function mileList(k){const h=S.heroes[k],M=Math.floor(h.lvl/10),rows=[];const fr
  return`<div class="sec">🏅 Milestones <small>(${M} unlocked · no level cap)</small></div><div class="mslist">${rows.join("")}</div>`}
 function nextMile(k){const h=S.heroes[k],n=(Math.floor(h.lvl/5)+1)*5,e=EVO_REQ.find(r=>r>h.lvl);const evo=e&&e<=n;if(evo)return`★ Lv ${e}: EVOLVE → ${EVO_N[(h.evo||0)+1]} (×2 dmg, ×1.6 HP)`;if(n%10===0){const mi=mileInfo(k,n/10);return`${mi.i} Lv ${n}: ${mi.name} — ${mi.desc.split(". ")[0]}`}return`✨ Lv ${n}: special upgrades`}
 function evoRow(k){const h=S.heroes[k],e=h.evo||0;return`<div class="evo ${e>=3?"max":""}">${e>=3?"★★★ "+EVO_N[3]+" — fully evolved · ":(e?"★".repeat(e)+" "+EVO_N[e]+" · ":"")}Next: ${nextMile(k)}</div>`}
-function mgrBar(){return S.max>=10?`<button class="evt mgr ${S.autoMgr?"on":""}" data-act="mgr">🧚 Auto-Fairy: ${S.autoMgr?"ON — buying the cheapest hero/charms for you":"OFF — tap to let the Auto-Fairy spend your gold"}</button>`:`<div class="hint">🧚 The Auto-Fairy arrives at stage 11.</div>`}
+function mgrBar(){return S.max>=10?`<button class="evt mgr ${S.autoMgr?"on":""}" data-act="mgr">🧚 Auto-Fairy: ${S.autoMgr?"ON — upgrading heroes, equipping relics and casting ready specials":"OFF — tap to let the Auto-Fairy spend your gold"}</button>`:`<div class="hint">🧚 The Auto-Fairy arrives at stage 11.</div>`}
 ACT.mgr=()=>{S.autoMgr=!S.autoMgr;AU.play("ui");renderTab()};
 function campBar(){return`<div class="sec">Campaign ${S.camp+1}/${CAMPS.length}</div><div class="camps">${CAMPS.map((c,i)=>{const u=campUnlocked(i);return`<button class="camp ${i===S.camp?"on":""} ${u?"":"lk"}" data-act="camp" data-c="${i}">${campaignBanner(i)}<b>${u?c.n:"Campaign "+(i+1)}</b><small>${u?campCast(i).map(k=>`<span class="cast-thumb">${heroPortrait(k)}</span>`).join("")+" · best "+Math.max(S.campBest[i]||0,i===S.camp?S.max:0)+"/"+STAGE_CAP:"Clear stage 100 of campaign "+i}</small></button>`}).join("")}</div><div class="hint" style="margin-top:0">${CAMPS[S.camp].d} Each campaign has its own story, progress, levels, Wishes and prestige. Its crew can be used in any campaign once unlocked. Stronger enemies eventually force a retreat and Rewrite.</div>`}
 ACT.camp=d=>{const c=+d.c;if(c===S.camp)return;if(!campUnlocked(c)){AU.play("err");toast("Clear stage 100 of the previous campaign first.","bad");return}confirmModal("Switch to "+CAMPS[c].n+"? Your current campaign is saved exactly as it is.","campDo",`data-c="${c}"`,"Switch")};
@@ -165,12 +162,13 @@ ACT.emptySlot=d=>{const opts=S.bag.filter(b=>b.slot===d.s);if(!opts.length){toas
 /* ---------- Gear tab & items ---------- */
 function itemBtn(it){const r=RAR[it.r];return`<button class="item" style="--rc:${r.c}" data-act="item" data-id="${it.id}"><i>${itemArt(it)}</i>${it.lv?`<b>+${it.lv}</b>`:""}<small>${r.n}</small></button>`}
 function renderGear(){
- let h=`<div class="hdr"><div class="sec" style="margin:0">Backpack ${S.bag.length}/30</div><button class="mini" data-act="sellJunk">Sell outclassed</button></div>`;
+ let h=`<div class="hdr"><div class="sec" style="margin:0">Backpack ${S.bag.length}/30</div><button class="mini" data-act="equipBest">Equip best</button><button class="mini" data-act="sellJunk">Sell outclassed</button></div>`;
  h+=S.bag.length?`<div class="grid5">${S.bag.slice().sort((a,b)=>b.r-a.r||iscore(b)-iscore(a)).map(itemBtn).join("")}</div>`:`<div class="hint">Your bag is empty. Monsters carry loot. Don't ask where.</div>`;
  h+=`<div class="sec">Equipped</div>`;
  h+=S.dep.map(k=>{const hr=S.heroes[k];return`<div class="hcard"><div class="hrow2"><div class="av" data-act="hero" data-k="${k}">${heroPortrait(k)}</div><div class="mi"><b>${CLS[k].hero}</b><small>Tap a piece to enhance it instantly</small></div></div><div class="slots6">${SLOTS.map(sl=>{const it=hr.gear[sl];if(!it)return`<button class="item empty" data-act="emptySlot" data-k="${k}" data-s="${sl}"><i>${slotArt(sl)}</i><small>${SLOT_N[sl]}</small></button>`;const c=enhCost(it);return`<button class="item ${S.gold>=c&&it.lv<20?"can":""}" style="--rc:${RAR[it.r].c}" data-act="enhQ" data-id="${it.id}" data-cost="${c}"><i>${itemArt(it)}</i><b>+${it.lv}</b><small>${it.lv>=20?"MAX":"⬆ "+fmt(c)}</small></button>`}).join("")}</div></div>`}).join("");
  return pageHeading("The Relic Vault","Enchanted keepsakes from a hundred unfinished tales.",1)+h+`<div class="hint">Chests contain fewer relics. Auto-sell also rejects duplicate upgrades already beaten by an item in your bag. Attack, health and gold bonuses have diminishing returns when stacked. Toggle auto-equip and auto-sell in Settings.</div>`;
 }
+ACT.equipBest=()=>{const n=equipBestFromBag(true);toast(n?"Equipped "+n+" relic upgrades.":R.lastBagSales?"Already equipped best; sold "+R.lastBagSales+" outclassed relics.":"Your deployed heroes already have the best available relics.","good");renderTab();};
 ACT.sellJunk=()=>{const sold=sellOutclassedLoot();toast('Sold '+sold.count+' outclassed items for '+fmt(sold.gold)+' gold','good');AU.play('coin');renderTab();};
 function statLines(it){let h="";for(const k in it.st){const v=it.st[k]*(1+0.08*it.lv)*100;h+=`<div class="srow"><span>${STAT_N[k]}</span><b>+${k==="atk"||k==="hp"?fmt(v)+"%":v.toFixed(1)+"%"}</b></div>`}return h}
 function openItem(id){
@@ -273,7 +271,7 @@ ACT.quitDo=()=>{saveGame();R.inGame=false;closeModal();$("#game").classList.add(
 
 const HOWTO=`<div class="mtitle">❓ Storyteller's Handbook</div>
 <div class="how"><p><b>1. MARCH.</b> Your squad walks right. Monsters walk left. Melee heroes advance into separate lanes and hold the front while attacking. Ranged heroes stay back and complain.</p>
-<p><b>2. TAP</b> the battlefield to smash the nearest monster. Use the <b>skill bar</b> for big spells.</p>
+<p><b>2. TAP</b> the battlefield to smash the nearest monster. The <b>eight portrait buttons</b> activate a special for each deployed hero. Specials unlock at hero Lv 5 and improve with hero upgrades. Turn on Auto Fairy to cast ready specials automatically; manual and automatic casts share one timer. Fallen heroes cannot cast and no longer contribute party damage.</p>
 <p><b>3. UPGRADE</b> heroes with one button: +1 level per press. Attack and Special grow on their own every few levels, every 10 levels is a milestone that boosts synergy and the whole party, and heroes evolve at Lv 25, 60 and 120 automatically. Your heroes auto-fight and auto-tap, so tapping is optional (but helps). Turn on the 🤖 Auto-Fairy once unlocked.</p><p><b>CAMPAIGNS.</b> Each campaign has 2000 stages and its own prestige. Reaching ~1200 takes serious synergy, gear and many restructures.</p>
 <p><b>4. FORMATION.</b> Your squad has 8 seats (Vanguard, Marksman, Bruiser, Support, Arcanist, Skirmisher, Commander, Wildcard). You start with the Vanguard; reach deeper stages and pay to unlock each seat's default hero. Every seat has 10 heroes, but only one sits there at a time.</p>
 <p><b>SYNERGY.</b> Every hero has tags and buffs allies with matching tags (🔗), and gets a bonus when the right ally is present (🤝). Mix and match seats to find combos.</p>
@@ -400,6 +398,9 @@ ACT.buyUtil=d=>{const c=utilPrice(d.id);if(S.gold<c){AU.play("err");return}S.gol
 ACT.useUtil=d=>{const r=useUtil(d.id);if(!r){AU.play("err");return}AU.play("level");if(d.id==="egg")eggModal(r);else{toast("Used "+UTILS.find(u=>u.id===d.id).n,"good");renderTab()}};
 ACT.buyGem=d=>{if(d.id==="gpick"&&!recruitReady()){toast("The guild opens in "+fmtTime(recruitWait()/1000)+". Your gems have been kept.","memo");return;}const r=buyGem(d.id);if(!r){AU.play("err");return}AU.play("level");
  if(r.chest)chestModal(r.chest,"Gilded Chest!");else if(r.egg)eggModal(r.egg);else{if(r.gold)toast("⏩ +"+fmt(r.gold)+" gold","good");renderTab()}};
+
+
+
 
 
 

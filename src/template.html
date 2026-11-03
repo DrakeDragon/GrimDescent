@@ -22,12 +22,12 @@
   <div class="tknight" id="titleKnight"></div>
   <div style="width:100%;display:flex;flex-direction:column;align-items:center">
    <div id="titleMenu"></div>
-   <div class="ver">v4 · Happily Ever After (Terms Apply)</div>
+   <div class="ver">v11 · Fellowship Skills & Living Damage</div>
   </div>
  </div>
  <div id="game" class="screen hidden">
   <header id="hud">
-   <div class="coin">🪙 <span id="gold">0</span><small id="dps">0/s</small></div>
+   <div class="coin">🪙 <span id="gold">0</span><small id="dps" title="Basic and auto-attack estimate from living heroes; special bursts vary by target.">0/s</small></div>
    <div class="mid" id="soHud"></div>
    <button class="ib" data-act="settings">⚙️</button>
   </header>
@@ -40,7 +40,7 @@
    <div id="bossbar" class="hidden"><i></i></div>
    <div id="banner"></div>
   </section>
-  <div id="skillbar"></div>
+  <div id="skillbar" role="group" aria-label="Eight hero specials"></div>
   <main id="panel"></main>
   <nav id="tabs"></nav>
  </div>
@@ -52,3 +52,4 @@
 </script>
 </body>
 </html>
+

@@ -200,7 +200,7 @@ function hurtHero(h,d,src){
  if(h.shield>0){const a=Math.min(h.shield,d);h.shield-=a;d-=a}
  if(d<=0)return;h.hp-=d;h.lastHurt=R.time;h.flash=.12;fnum(h.x,h.y-26,"-"+fmt(d),"#ff5a6e",12);AU.play("hurt");
  if(h.hp<=0){
-  h.hp=0;h.down=true;h.dt=18;h.st="idle";h.tgt=null;h.shield=0;S.stats.deaths++;AU.play("death");burst(h.x,h.y,"#ff5a6e",12);
+  h.hp=0;h.down=true;recalc();h.dt=18;h.st="idle";h.tgt=null;h.shield=0;S.stats.deaths++;AU.play("death");burst(h.x,h.y,"#ff5a6e",12);
   const m=h.c.hero+" "+pick(DEATHS);ticker("INCIDENT: "+m);say(h,"Ow.",2);vibe(40);
   const al=aliveHeroes();if(al.length)setTimeout(()=>quip(pick(aliveHeroes()),QUIP.allyDown,.7),700);
  }else if(h.hp/h.mhp<.3&&!h.lowQ){h.lowQ=true;quip(h,QUIP.lowhp,.8)}
@@ -212,7 +212,7 @@ function healHero(h,amt){
  const a=Math.min(h.mhp-h.hp,amt*hzv('curse',.5)*.3*recoveryFactor(),h.mhp*.08,h.healBudget);if(a<=0)return 0;
  h.hp+=a;h.healBudget-=a;fnum(h.x,h.y-26,'+'+fmt(a),'#92b98b',11);if(h.hp/h.mhp>.6)h.lowQ=false;return a;
 }
-function reviveHero(h,fr){if(!h.down||R.defeatPending||R.wipeT>0)return false;if(h.revivedAt!=null&&R.time-h.revivedAt<20)return false;h.down=false;h.hp=h.mhp*Math.min(.4,fr);h.revivedAt=R.time;h.x=h.sx;h.y=h.sy;h.st='idle';S.stats.revives++;burst(h.x,h.y,'#92b98b',10);return true;}
+function reviveHero(h,fr){if(!h.down||R.defeatPending||R.wipeT>0)return false;if(h.revivedAt!=null&&R.time-h.revivedAt<20)return false;h.down=false;h.hp=h.mhp*Math.min(.4,fr);h.revivedAt=R.time;h.x=h.sx;h.y=h.sy;h.st='idle';S.stats.revives++;recalc();burst(h.x,h.y,'#92b98b',10);return true;}
 function markAttack(o){const now=R.artTime||0;if(o.artAttack==null||now-o.artAttack>=.48)o.artAttack=now;}
 function encounterHitRate(g){const p=clamp(g/Math.max(1,wallStage()),0,1),depth=wallDepth(g);return (.0015+.0085*p*p)*(1+.35*depth+.28*depth*depth);}
 function incomingEnemyDamage(e,h){const g=R.stg.g,w=WX(),role=h.c&&h.c.slot==='van'?.75:1;
@@ -242,9 +242,9 @@ function heroUpdate(h,dt){
  if(w.hdot)h.hp=Math.max(1,h.hp-h.mhp*w.hdot*(1-C.umb)*dt);
  if(h.shT>0){h.shT-=dt;if(h.shT<=0)h.shield=0}
  if(R.trans>0){moveTo(h,h.sx,h.sy,420*U,dt);h.st="idle";return}
- const m=heroSpd(h);h.cd-=dt*m;h.scd-=dt*m/(1-Math.min(.45,C.cdr+(C.h[h.k]?C.h[h.k].cdr:0)));
+ const m=heroSpd(h);h.cd-=dt*m;h.scd=Math.max(0,h.scd-dt);
  const hk=S.heroes[h.k];
- if(hk.sp>0&&h.scd<=0&&trySpecial(h)){h.scd=Math.max(6,c.sp.cd);}
+ if(S.autoMgr&&hk.sp>0&&h.scd<=0)useHeroSkill(h.k);
  if(h.st==="idle"){
   moveTo(h,h.sx,h.sy,380*U,dt);
   if(h.cd<=0){
@@ -274,8 +274,14 @@ function fireBolt(h,e){
  const col=ELCOL[h.c.el]||"#fff",origin=projectileOrigin(h);
  R.proj.push({t:"bolt",x:origin.x,y:origin.y,tgt:e,sp:620*U,dmg:heroDmgBase(h),k:h.k,col,arrow:h.k==="archer",h});AU.play("shoot");
 }
+function heroSkillCooldown(k){const c=CLS[k],st=C.h[k];return Math.max(6,Math.max(8,c.sp.cd)*(1-Math.min(.35,C.cdr+(st?st.cdr:0))));}
+function useHeroSkill(k){
+ const h=(R.team||[]).find(x=>x.k===k),owned=S.heroes[k];
+ if(!h||h.down||!owned||owned.sp<1||h.scd>0||!R.inGame||R.modalPause||R.defeatPending||R.wipeT>0||R.trans>0||!R.stg||R.stg.done||!liveEn().length)return false;
+ if(!trySpecial(h))return false;h.scd=heroSkillCooldown(k);h.skillUsedAt=R.time;return true;
+}
 function trySpecial(h){
- const c=h.c,sp=c.sp,st=C.h[h.k],en=liveEn();const sd=st.sp*st.hit*heroMod(h);
+ const c=h.c,sp=c.sp,st=C.h[h.k],en=liveEn();const sd=Math.min(6,st.sp)*st.hit*heroMod(h);
  const need=()=>en.length>0;
  const front=frontEnemy();
  switch(sp.id){
@@ -307,7 +313,7 @@ function trySpecial(h){
   case"poison":{if(!need())return false;for(const e of en){e.burn=6;e.burnDps=sd/6}burst(W*.7,H*.7,"#7dff4a",16,140);AU.play("special");say(h,"Toxic positivity.",2);break}
   case"quake":{if(!need())return false;for(const e of en){dmgEnemy(e,sd,{col:"#c9a56a"});e.stun=Math.max(e.stun,1.2)}shake(300);R.flash=.15;AU.play("boom");say(h,"Oops. Did I do that?",2);break}
   case"rally":{R.buff.cry=Math.max(R.buff.cry,6);AU.play("special");for(const x of aliveHeroes())ring(x.x,x.y,"#ffb020",30);say(h,"Let's synergize!",2);break}
-  case"taxes":{if(!need())return false;const gold=floorHP(S.stage)*C.goldBase*st.sp*0.4;S.gold+=gold;S.totalGold+=gold;S.runGold+=gold;fnum(h.x,h.y-40,"+"+fmt(gold),"#ffd34a",15);AU.play("coin");say(h,"Everything is deductible.",2);break}
+  case"taxes":{if(!need())return false;const gold=floorHP(S.stage)*C.goldBase*Math.min(6,st.sp)*0.4;S.gold+=gold;S.totalGold+=gold;S.runGold+=gold;fnum(h.x,h.y-40,"+"+fmt(gold),"#ffd34a",15);AU.play("coin");say(h,"Everything is deductible.",2);break}
   case"revive":{const dn=R.team.filter(x=>x.down),wk=weakestHero();if(!dn.length&&(!wk||wk.hp/wk.mhp>.8))return false;if(dn.length)reviveHero(dn[0],Math.min(1,st.sp));for(const x of aliveHeroes())healHero(x,x.mhp*.12);AU.play("heal");ring(h.x,h.y,"#fff",90);say(h,"Back to work.",2);break}
   case"smite":{if(!need())return false;const e=nearestEnemy(h.sx,h.sy);if(!e||e.x-h.sx>280*U)return false;dmgEnemy(e,sd,{col:"#ffe9a0"});const wk=weakestHero();if(wk)healHero(wk,wk.mhp*.1);ring(e.x,e.y,"#ffe9a0",60);AU.play("skill");say(h,"Smite scheduled.",1.6);break}
   default:return false;
@@ -395,23 +401,10 @@ function tapAt(x,y){
  burst(x,y,"#19e6ff",4,80);if(!e)return;tapHit(e);
 }
 function tapHit(e,auto){
- let d=C.tap,cr=Math.random()<C.critCh;if(cr)d*=C.critMul;
+ let d=activeTapPower();if(d<=0)return false;let cr=Math.random()<C.critCh;if(cr)d*=C.critMul;
  dmgEnemy(e,d,{crit:cr,col:"#19e6ff"});burst(e.x,e.y,"#19e6ff",3,80);if(!auto)AU.play(cr?"crit":"hit");
 }
-function useSkill(id){
- const sk=SKS.find(s=>s.id===id),l=SKL(id);
- if(!sk||l<1||(R.cd[id]||0)>0||!R.stg||R.trans>0||!R.inGame)return false;
- const en=liveEn();
- if((id==="slash"||id==="meteor")&&!en.length)return false;
- switch(id){
-  case"slash":{const e=frontEnemy();let d=C.tap*(12+4*l),cr=Math.random()<C.critCh;if(cr)d*=C.critMul;dmgEnemy(e,d,{crit:cr,col:"#ffe84a"});ring(e.x,e.y,"#ffe84a",60);AU.play("skill");shake(150);break}
-  case"cry":R.buff.cry=sk.dur;AU.play("special");bannerShow("📣 MOTIVATION!","Damage and speed up");break;
-  case"cash":R.buff.gold=sk.dur;AU.play("coin");bannerShow("🤝 GOLDEN HANDSHAKE","Gold x"+C.goldBuff.toFixed(1));break;
-  case"meteor":{for(const e of en)dmgEnemy(e,C.tap*(30+10*l),{col:"#ff7a2f"});R.flash=.4;AU.play("boom");shake(400);burst(W*.7,H*.7,"#ff7a2f",30,220);break}
-  case"hr":{const f=Math.min(1,(50+5*l)/100);for(const h of R.team){if(h.down)reviveHero(h,f);else healHero(h,h.mhp*f)}AU.play("heal");bannerShow("📋 FAIRY GODMOTHER","Everyone is rehired.");break}
- }
- R.cd[id]=sk.cd;return true;
-}
+function useSkill(id){return useHeroSkill(id);}
 
 /* ---------- main update ---------- */
 const HZ=()=>hazardOf(S.stage);
@@ -531,12 +524,13 @@ const SEA_HERO_KEYS=['colossus','crossbowman','ronin','druid','storm','pickpocke
 SEA_HERO_KEYS.forEach((key,row)=>{GAME_ART[key]={src:'assets/sea-heroes.png',cols:4,rows:8,scale:1.9,enemyRow:row};});
 for(const [sheet,keys] of Object.entries(ART_CREWS))keys.forEach((key,row)=>{GAME_ART[key]={src:'assets/'+sheet+'-heroes.png',cols:4,rows:keys.length,scale:1.9,enemyRow:row};});
 for(const world of Object.values(CAMPAIGN_WORLDS))world.enemies.forEach((mob,row)=>{const key=world.key+'-enemy-'+row;GAME_ART[key]={src:'assets/'+world.key+'-enemies.png',cols:4,rows:8,scale:1.8,enemyRow:row};ENEMY_ART[mob[0]]=key;});
-const STAGE_BACKGROUNDS=PROGRESSION_AREAS.map(area=>{const im=new Image();im.artSource='assets/'+area+'-background.png';return im;});
+for(const area of ['court','vault','overtime'])for(let row=0;row<7;row++){const a=GAME_ART[area+'-'+row];a.src='assets/'+area+'-v11-enemies.png';a.frameRects=ART_FRAME_RECTS[area];a.frameHeight=Math.max(...a.frameRects.map(f=>f[3]));}
+const STAGE_BACKGROUNDS=PROGRESSION_AREAS.map(area=>{const im=new Image();im.artSource='assets/'+area+(['court','vault','overtime'].includes(area)?'-v11':'')+'-background.png';return im;});
 const BEAN_HERO_KEYS=['templar','gunslinger','monk','sunpriest','frost','assassin','manager','fate'];
 BEAN_HERO_KEYS.forEach((key,row)=>{GAME_ART[key]={src:'assets/bean-heroes.png',cols:4,rows:8,scale:1.9,enemyRow:row};});
 const COURT_HERO_KEYS=['paladin','ranger','berserker','cleric','pyromancer','duelist','chrono','gambler'];
 COURT_HERO_KEYS.forEach((key,row)=>{GAME_ART[key]={src:'assets/court-heroes.png',cols:4,rows:8,scale:1.9,enemyRow:row};});
-const THEME_ART={cave:'cellar',forest:'deepforest',desert:'dunes',ice:'glacier',volcano:'forge',swamp:'sewer',ocean:'reef',sky:'cloud',city:'crossroads',space:'orrery',candy:'fungal',haunted:'crypt',factory:'toyforge',crystal:'frost',jungle:'fungal',mountain:'frost',hell:'forge',dream:'cloud',court:'court',farm:'fungal',beach:'sewer'};
+const THEME_ART={cave:'cellar',forest:'deepforest',desert:'dunes',ice:'glacier',volcano:'forge',swamp:'sewer',ocean:'reef',sky:'cloud',city:'crossroads',office:'court',space:'orrery',candy:'fungal',haunted:'crypt',factory:'toyforge',crystal:'frost',jungle:'fungal',mountain:'frost',hell:'forge',dream:'overtime',court:'court',farm:'fungal',beach:'sewer'};
 function areaArtForRealm(rl){return THEME_ART[rl.th]|| (rl.el==='fire'?'forge':rl.el==='ice'?'frost':rl.el==='storm'?'cloud':rl.el==='nature'?'fungal':'crypt');}
 function enemyArtKey(e){const world=CAMPAIGN_WORLDS[S.camp];if(world&&e.mini)return world.key+'-enemy-6';const exact=ENEMY_ART[e.name.replace(/^Elite /,'')];if(exact)return exact;
  const rl=realmOf(S.stage),area=areaArtForRealm(rl);
@@ -544,10 +538,17 @@ function enemyArtKey(e){const world=CAMPAIGN_WORLDS[S.camp];if(world&&e.mini)ret
  return area+'-'+({grunt:0,runner:1,spitter:2,brute:3,swarm:4,tank:5,elite:3}[e.kind]||0);
 }
 function warmStageArt(stage){
+ for(const key of ['court-0',enemyArtKey({name:realmOf(stage).mobs[0][0],kind:'grunt',e:''})]){const a=GAME_ART[key];if(a)requestArt(a.image,a.src);}
  const world=CAMPAIGN_WORLDS[S.camp];if(world){const src=campaignBackgroundSource(S.camp,stage);let im=campaignBackdrops.get(src);if(!im){im=new Image();campaignBackdrops.set(src,im);}requestArt(im,src);return;}
  for(const g of [stage,stage+10]){const rl=realmOf(g),index=!S.camp&&areaIdx(g)<REALMS.length?areaIdx(g):PROGRESSION_AREAS.indexOf(areaArtForRealm(rl)),im=STAGE_BACKGROUNDS[index];if(im)requestArt(im,im.artSource);}
 }
-function requestArt(image,src){if(image.artRequested)return;image.artRequested=true;image.src=src;}
+function requestArt(image,src){
+ if(image.artRequested){if(!image.artFailed||image.artAttempts>=3||Date.now()<(image.artRetryAt||0))return;image.artRequested=false;}
+ image.artRequested=true;image.artAttempts=(image.artAttempts||0)+1;image.artFailed=false;
+ image.onload=()=>{image.artFailed=false;};image.onerror=()=>{image.artFailed=true;image.artRetryAt=Date.now()+3000*image.artAttempts;};
+ image.src=src+(image.artAttempts>1?'?artRetry='+image.artAttempts:'');
+}
+
 const decodedArt=new Map();for(const a of Object.values(GAME_ART)){if(!decodedArt.has(a.src))decodedArt.set(a.src,new Image());a.image=decodedArt.get(a.src);}
 const campaignArt=new Image();
 function drawCachedBackdrop(im,sx,sy,sw,sh){const key=im.src+'|'+W+'|'+H+'|'+DPR+'|'+sx+'|'+sy+'|'+sw+'|'+sh;if(!R.backdropCache||R.backdropCache.key!==key){const canvas=document.createElement('canvas');canvas.width=Math.ceil(W*DPR);canvas.height=Math.ceil(H*DPR);canvas.getContext('2d').drawImage(im,sx,sy,sw,sh,0,0,canvas.width,canvas.height);R.backdropCache={key,canvas};}cx.drawImage(R.backdropCache.canvas,0,0,W,H);}
@@ -560,7 +561,7 @@ function drawBattleEffect(row,frame,x,y,size){requestArt(BATTLE_VFX,'assets/batt
 const SPRITE_POSE_CACHE=new Map();
 function paintSprite(key,sz,attack,phase,still,attackStart){
  const a=GAME_ART[key];if(!a)return false;requestArt(a.image,a.src);if(!a.image.complete||!a.image.naturalWidth)return false;
- const cw=a.image.naturalWidth/a.cols,ch=a.image.naturalHeight/a.rows;
+ const cw=a.image.naturalWidth/a.cols,ch=a.frameHeight||a.image.naturalHeight/a.rows;
  const isAtlas=a.enemyRow!=null,row=isAtlas?a.enemyRow:attack?1:0;
  const walk=a.pet?[0,1,2,3]:isAtlas?[0,1,0,1]:[0,1,2,3];
  const clock=(R.artTime||0)*5+(phase||0);
@@ -574,7 +575,7 @@ function paintSprite(key,sz,attack,phase,still,attackStart){
  if(canvas){SPRITE_POSE_CACHE.delete(cacheKey);SPRITE_POSE_CACHE.set(cacheKey,canvas);}
  else{
   const scale=Math.min(1,160/Math.max(cw,ch));canvas=document.createElement('canvas');canvas.width=Math.ceil(cw*scale);canvas.height=Math.ceil(ch*scale);const bc=canvas.getContext('2d');bc.globalCompositeOperation='lighter';
-  const draw=(f,alpha)=>{if(alpha<=0)return;const box=(typeof SPRITE_BOUNDS!=='undefined'&&SPRITE_BOUNDS[key]||[])[row*a.cols+f]||[0,0,cw,ch];bc.globalAlpha=alpha;bc.drawImage(a.image,Math.floor(f*cw)+box[0],Math.floor(row*ch)+box[1],box[2],box[3],(cw-box[2])/2*scale,(ch-box[3])*scale,box[2]*scale,box[3]*scale);};
+  const draw=(f,alpha)=>{if(alpha<=0)return;const absolute=a.frameRects&&a.frameRects[row*a.cols+f],box=absolute||(typeof SPRITE_BOUNDS!=='undefined'&&SPRITE_BOUNDS[key]||[])[row*a.cols+f]||[0,0,cw,ch];bc.globalAlpha=alpha;bc.drawImage(a.image,absolute?box[0]:Math.floor(f*cw)+box[0],absolute?box[1]:Math.floor(row*ch)+box[1],box[2],box[3],(cw-box[2])/2*scale,(ch-box[3])*scale,box[2]*scale,box[3]*scale);};
   draw(frame,1-q);draw(next,q);bc.globalAlpha=1;SPRITE_POSE_CACHE.set(cacheKey,canvas);if(SPRITE_POSE_CACHE.size>96)SPRITE_POSE_CACHE.delete(SPRITE_POSE_CACHE.keys().next().value);
  }
  const dw=sz*a.scale,dh=dw*ch/cw;cx.drawImage(canvas,-dw/2,sz*.48-dh,dw,dh);return true;
@@ -590,15 +591,18 @@ function spriteTop(key,y,sz){const ratio=spriteRatio(key);return ratio==null?y-s
 function fitActorSize(key,y,sz){const ratio=(spriteRatio(key)==null?.65:spriteRatio(key)-.48);return Math.min(sz,Math.max(12,(y-106)/ratio));}
 function heroSize(h){return fitActorSize(HERO_ART[h.k],h.y,clamp(H*.095,25,33)*(1+.035*((S.heroes[h.k]||{}).evo||0)));}
 function heroTop(h){return spriteTop(HERO_ART[h.k],h.y,heroSize(h))-3;}
-function enemySize(e){return fitActorSize(enemyArtKey(e),e.y,26*e.sz*U*clamp(H/300,.9,1.2));}
-function enemyTop(e){return spriteTop(enemyArtKey(e),e.y,enemySize(e))-3;}
+function visibleEnemyArtKey(e){const primary=enemyArtKey(e);for(const key of [primary,R.lastEnemyArt,'court-0','cellar-0']){const a=GAME_ART[key];if(a){requestArt(a.image,a.src);if(a.image.complete&&a.image.naturalWidth)return key;}}return primary;}
+function enemySize(e){return fitActorSize(visibleEnemyArtKey(e),e.y,26*e.sz*U*clamp(H/300,.9,1.2));}
+function enemyTop(e){return spriteTop(visibleEnemyArtKey(e),e.y,enemySize(e))-3;}
 function drawSpeech(){
  const actors=R.team.filter(h=>!h.down).map(h=>({o:h,top:heroTop(h)})).concat(R.en.filter(e=>!e.dead&&e.x<W).map(e=>({o:e,top:enemyTop(e)})));
  const speaking=actors.find(a=>a.o.bubT>0&&a.o.bub);if(!speaking)return;
  const ceiling=Math.min(...actors.map(a=>a.top))-17;
  drawBubble(speaking.o.x,ceiling,speaking.o.bub,speaking.o.bubT);
 }
-function drawArtEnemy(e,sz){return actorSprite(enemyArtKey(e),e,sz,e.dead||e.stun>0||e.root>0);}
+function drawArtEnemy(e,sz){const key=enemyArtKey(e),still=e.dead||e.stun>0||e.root>0;if(actorSprite(key,e,sz,still)){R.lastEnemyArt=key;return true;}
+ for(const fallback of [R.lastEnemyArt,'court-0','cellar-0'])if(fallback&&fallback!==key&&actorSprite(fallback,e,sz,still)){R.artFallbackDraws=(R.artFallbackDraws||0)+1;return true;}return false;
+}
 function setFont(sz){cx.font=Math.round(sz)+"px "+EMOJI_FONT}
 function render(){
  if(!cx)return;const rl=realmOf(S.stage),hz=H*.44;
@@ -765,6 +769,8 @@ function drawBg(rl,hz){
  cx.globalAlpha=1;
 
 }
+
+
 
 
 
