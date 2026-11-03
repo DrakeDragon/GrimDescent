@@ -19,7 +19,7 @@ function fmtTime(s){s=Math.floor(s);const h=Math.floor(s/3600),m=Math.floor(s%36
 const SAVE_KEY="descentinc_save_v4";
 const newHero=()=>({lvl:1,at:1,sp:0,evo:0,gear:{weapon:null,helm:null,armor:null,trinket:null,boots:null,ring:null}});
 function newState(){return{v:2,gold:0,stage:0,max:0,auto:true,kills:0,taps:0,totalGold:0,runGold:0,up:{},sk:{},inv:{},gems:0,gemUp:{},bt:{ticket:0,pre:0},shopN:0,flip:{},chestBag:[],pot:{str:0,spd:0,hp:0},pb:{str:0,spd:0,hp:0},camp:0,camps:{},campBest:{},autoMgr:false,
- heroes:{knight:newHero()},dep:["knight"],own:{knight:1},seat:{van:"knight"},pref:{},picks:0,pickAt:Date.now()+7*864e5,pickList:null,bag:[],pets:{},petAct:[],
+ heroes:{knight:newHero()},dep:["knight"],own:{knight:1},seat:{van:"knight"},pref:{},picks:0,recruitStartedAt:Date.now(),recruitPending:0,pickAt:Date.now()+864e5,pickList:null,bag:[],pets:{},petAct:[],
  so:0,soTotal:0,perks:{},restructures:0,ach:{},seenRealm:{},seen:{},seenIntro:false,
  stats:{deaths:0,bosses:0,crits:0,loot:0,sold:0,revives:0,maxEver:0,legend:0,eggs:0,wipes:0},log:[],buyQty:1,speed:1,last:Date.now(),
  set:{music:true,sfx:true,shake:true,numbers:true,vibe:true,autosell:false,autoequip:true,musicVol:.5,sfxVol:.7}}}
@@ -28,8 +28,8 @@ function normS(s){
  for(const k in s.heroes){s.heroes[k]=Object.assign(newHero(),s.heroes[k]);s.heroes[k].gear=Object.assign(newHero().gear,s.heroes[k].gear||{});if(!CLS[k])delete s.heroes[k]}
  for(const k in s.own)if(!CLS[k])delete s.own[k];for(const id in s.seat){const k=s.seat[id];if(!CLS[k]||CLS[k].slot!==id||!s.own[k])s.seat[id]=SLOT_BY_ID[id].list[s.camp||0]}
  for(const id in s.seat){const k=s.seat[id];s.own[k]=1;if(!s.heroes[k])s.heroes[k]=newHero()}
- s.dep=SLOT_ORDER.filter(id=>s.seat[id]).map(id=>s.seat[id]);return s}
-function mergeSave(o){const d=newState();const s=Object.assign(d,o);const n=newState();s.set=Object.assign(n.set,o.set||{});s.stats=Object.assign(n.stats,o.stats||{});
+ s.dep=SLOT_ORDER.filter(id=>s.seat[id]).map(id=>s.seat[id]);migrateFairyGear(s);normalizeRecruitment(s);return s}
+function mergeSave(o){const d=newState();const s=Object.assign(d,o);s.recruitStartedAt=Number.isFinite(o.recruitStartedAt)?o.recruitStartedAt:Math.min(Date.now(),Math.max(0,(o.pickAt||((o.last||Date.now())+7*864e5))-7*864e5));s.recruitScheduleV=Number.isFinite(o.recruitStartedAt)?o.recruitScheduleV:0;const n=newState();s.set=Object.assign(n.set,o.set||{});s.stats=Object.assign(n.stats,o.stats||{});
  if(!s.heroes||!Object.keys(s.heroes).length)s.heroes={knight:newHero()};
  s.chestBag=Array.isArray(o.chestBag)?o.chestBag:[];s.camp=o.camp||0;s.camps=o.camps||{};s.campBest=o.campBest||{};s.autoMgr=!!o.autoMgr;
  s.pot=Object.assign({str:0,spd:0,hp:0},o.pot||{});s.pb=Object.assign({str:0,spd:0,hp:0},o.pb||{});
@@ -54,7 +54,7 @@ const floorHP=g=>{const u=effG(g);return 8*Math.pow(1.19,sg(u))*wallMul(u)};
 const gemU=id=>S.gemUp[id]||0;
 const isBoss=g=>g%10===9;
 const areaIdx=g=>Math.floor(g/10);
-const realmOf=g=>{const i=areaIdx(g);return(i<REALMS.length&&!S.camp)?REALMS[i]:genRealm(i+5000*(S.camp||0))};
+const realmOf=g=>{const i=areaIdx(g);if(CAMPAIGN_WORLDS[S.camp])return illustratedCampaignRealm(i,S.camp);return(i<REALMS.length&&!S.camp)?REALMS[i]:genRealm(i+5000*(S.camp||0))};
 const realmName=g=>realmOf(g).n;
 const syncDep=()=>{S.dep=SLOT_ORDER.filter(id=>S.seat[id]).map(id=>S.seat[id])};
 
@@ -134,13 +134,13 @@ function swapSeat(id,k){
  if(!slotUnlocked(id)||!S.own[k]||CLS[k].slot!==id||S.seat[id]===k)return false;
  ensureHero(k);S.seat[id]=k;S.pref[id]=k;syncDep();recalc();buildTeam();if(R.hero&&R.hero[k])quip(R.hero[k],QUIP.hire);return true}
 function genPickList(){
- const n=3+perk("bunk");const un=CLS_ORDER.filter(k=>!S.own[k]);
+ const n=3+perk("bunk");const un=CLS_ORDER.filter(k=>!S.own[k]&&APPROVED_HERO_ART.includes(k));
  const good=un.filter(k=>slotUnlocked(CLS[k].slot)),rest=un.filter(k=>!slotUnlocked(CLS[k].slot));
  const out=[];const pool=good.slice();while(out.length<n&&pool.length)out.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);
  const p2=rest.slice();while(out.length<n&&p2.length)out.push(p2.splice(Math.floor(Math.random()*p2.length),1)[0]);
  return out}
 function pickHero(k){
- if(S.picks<1||!S.pickList||!S.pickList.includes(k)||S.own[k])return false;
+ if(!recruitReady()||!APPROVED_HERO_ART.includes(k)||S.picks<1||!S.pickList||!S.pickList.includes(k)||S.own[k])return false;
  S.picks--;S.pickList=null;S.own[k]=1;const id=CLS[k].slot;S.pref[id]=k;
  if(slotUnlocked(id)){ensureHero(k);S.seat[id]=k;syncDep();recalc();buildTeam()}
  saveGame();return true}
@@ -153,7 +153,7 @@ function switchCamp(c){
  R.buff={cry:0,gold:0,haste:0};R.cd={};R.lastArea=-1;R.mapBase=null;recalc();buildTeam();startStage();onAreaChanged();saveGame();return true}
 function newCampState(c){const n=newState(),o={};for(const f of CAMP_F)o[f]=n[f];const v=campHero('van',c||0);o.heroes={[v]:newHero()};o.seat={van:v};o.dep=[v];return o}
 function autoManage(){
- if(!S.autoMgr||S.max<10||!R.inGame)return;
+ if(!S.autoMgr||S.max<10||!R.inGame||R.modalPause)return;
  for(let n=0;n<8;n++){
   for(const id of SLOT_ORDER)if(canUnlockSlot(id)&&S.gold>=slotHeroCost(id)){unlockSlot(id);break}
   let best=null,bc=1e300;
@@ -162,10 +162,10 @@ function autoManage(){
   if(!best||S.gold<best.c)return;if(!best.f())return}
 }
 const u_c=(u,l)=>u.b*Math.pow(u.g,l);
-function addPicks(n){if(CLS_ORDER.every(k=>S.own[k]))return;S.picks=Math.min(5,S.picks+n);if(!S.pickList)S.pickList=genPickList()}
-function pickTick(){
- if(Date.now()>=S.pickAt){let n=0;while(Date.now()>=S.pickAt&&n<5){S.pickAt+=7*864e5;n++}if(S.pickAt<Date.now())S.pickAt=Date.now()+7*864e5;addPicks(n);return true}
- if(S.picks>0&&!S.pickList)S.pickList=genPickList();return false}
+function addPicks(n){if(!CLS_ORDER.some(k=>!S.own[k]&&APPROVED_HERO_ART.includes(k))){S.recruitPending=Math.min(5,(S.recruitPending||0)+n);return false;}if(!recruitReady()){S.recruitPending=Math.min(5,(S.recruitPending||0)+n);return false;}S.picks=Math.min(5,S.picks+n);S.pickList=genPickList();return S.picks>0;}
+function pickTick(){normalizeRecruitment(S);if(!recruitReady())return false;let granted=false;if(S.recruitPending>0){const n=S.recruitPending;S.recruitPending=0;granted=addPicks(n);}
+ if(Date.now()>=S.pickAt){let n=0;while(Date.now()>=S.pickAt&&n<5){S.pickAt+=7*864e5;n++;}if(S.pickAt<Date.now())S.pickAt=Date.now()+7*864e5;granted=addPicks(n)||granted;}
+ if(S.picks>0&&(!S.pickList||!S.pickList.length))S.pickList=genPickList();return granted;}
 const heroOwned=k=>!!S.own[k];
 
 /* ---------- audio ---------- */
@@ -209,7 +209,7 @@ const AU={ctx:null,sx:null,mu:null,timer:null,step:0,
 };
 
 /* ---------- small ui helpers ---------- */
-function toast(msg,cls){const b=$("#toasts");if(!b)return;while(b.children.length>3)b.firstChild.remove();const t=document.createElement("div");t.className="toast "+(cls||"");t.textContent=msg;b.appendChild(t);setTimeout(()=>t.remove(),3200)}
+function toast(msg,cls){const b=$("#toasts");if(!b)return;while(b.children.length>3)b.firstChild.remove();const t=document.createElement("div");t.className="toast "+(cls||"");t.textContent=msg;polishUi(t);b.appendChild(t);setTimeout(()=>t.remove(),3200)}
 function shake(ms){if(!S.set.shake)return;const s=$("#stage");s.classList.remove("shake");void s.offsetWidth;s.classList.add("shake");setTimeout(()=>s.classList.remove("shake"),ms||300)}
 function bannerShow(t1,t2){const b=$("#banner");b.innerHTML="<b>"+t1+"</b>"+(t2?"<span>"+t2+"</span>":"");b.classList.remove("show");void b.offsetWidth;b.classList.add("show");setTimeout(()=>b.classList.remove("show"),2600)}
 function vibe(ms){if(S.set.vibe&&navigator.vibrate)try{navigator.vibrate(ms)}catch(e){}}
@@ -229,7 +229,7 @@ function genItem(ilvl,boss,minR){
  const keys=["atk","hp","gold"].filter(k=>k!==mk).sort(()=>Math.random()-.5);
  for(let j=0;j<EXTRA[r]&&j<keys.length;j++)st[keys[j]]=keys[j]==="gold"?0.04*rm*(1+ilvl/30):main*0.6;
  let name=base[0];if(r>=1)name=pick(PRE)+" "+name;if(r>=3)name+=" "+pick(SUFX);if(r===0)name="Rusty "+base[0];
- return{id:"i"+Date.now().toString(36)+ri(0,99999),slot,name,e:base[1],r,ilvl,lv:0,st};
+ return{id:"i"+Date.now().toString(36)+ri(0,99999),slot,name,artId:base[2],e:"",r,ilvl,lv:0,st};
 }
 function dropLoot(boss){
  const it=genItem(S.stage,boss);S.stats.loot++;if(it.r>=5)S.stats.legend++;
@@ -308,7 +308,7 @@ function offlineGain(sec){
   const ratio=est/dps,tc=Math.max(15,ratio*1.3);
   const gps=hp*(7+(boss?9:mini?4:0))*C.goldBase;
   const beatable=g<S.max?ratio<=240:ratio<=90;
-  if(!beatable||g>=hardStage()||g>=STAGE_CAP-1){gold+=t/Math.max(15,Math.min(tc,300))*hp*7*C.goldBase*.8;break}
+  if(!beatable||(g>=Math.floor(wallStage())&&g>=S.max)||g>=STAGE_CAP-1){gold+=t/Math.max(15,Math.min(tc,300))*hp*7*C.goldBase*.8;break}
   if(t<tc){gold+=gps*(t/tc);break}
   t-=tc;gold+=gps;if(boss||mini)chests.push({t:boss?"boss":"mini",g});g++;n++;
  }
@@ -318,7 +318,7 @@ function applyOffline(o){
  if(!o||(o.gold<=0&&o.to===o.from))return false;
  S.gold+=o.gold;S.totalGold+=o.gold;S.runGold+=o.gold;
  for(const c of o.chests)S.chestBag.push(c);
- if(o.to>o.from){S.stage=Math.min(o.to,hardStage());S.max=Math.min(hardStage(),Math.max(S.max,o.to));S.stats.maxEver=Math.max(S.stats.maxEver,S.max);S.campBest[S.camp]=Math.max(S.campBest[S.camp]||0,S.max);if(typeof startStage==="function"&&R.inGame){recalc();startStage();if(areaIdx(S.stage)!==R.lastArea)onAreaChanged()}}
+ if(o.to>o.from){S.stage=Math.min(o.to,STAGE_CAP-1);S.max=Math.min(STAGE_CAP-1,Math.max(S.max,o.to));S.stats.maxEver=Math.max(S.stats.maxEver,S.max);S.campBest[S.camp]=Math.max(S.campBest[S.camp]||0,S.max);if(typeof startStage==="function"&&R.inGame){recalc();startStage();if(areaIdx(S.stage)!==R.lastArea)onAreaChanged()}}
  return true}
 
 /* ---------- chests, supplies, shops ---------- */
@@ -349,6 +349,7 @@ function useUtil(id){
  S.inv[id]--;return true;
 }
 function buyGem(id){
+ if(id==="gpick"&&(!recruitReady()||!APPROVED_HERO_ART.some(k=>!S.own[k])))return null;
  const g=GEMS.find(x=>x.id===id),l=gemU(id),c=g.cost(l);
  if(g.max!==undefined&&l>=g.max)return null;if(S.gems<c)return null;S.gems-=c;
  if(id==="gchest")return{chest:openChest("premium",Math.max(S.stage,S.max))};
