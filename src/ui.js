@@ -165,20 +165,20 @@ ACT.emptySlot=d=>{const opts=S.bag.filter(b=>b.slot===d.s);if(!opts.length){toas
 /* ---------- Gear tab & items ---------- */
 function itemBtn(it){const r=RAR[it.r];return`<button class="item" style="--rc:${r.c}" data-act="item" data-id="${it.id}"><i>${itemArt(it)}</i>${it.lv?`<b>+${it.lv}</b>`:""}<small>${r.n}</small></button>`}
 function renderGear(){
- let h=`<div class="hdr"><div class="sec" style="margin:0">Backpack ${S.bag.length}/30</div><button class="mini" data-act="sellJunk">Sell junk</button></div>`;
+ let h=`<div class="hdr"><div class="sec" style="margin:0">Backpack ${S.bag.length}/30</div><button class="mini" data-act="sellJunk">Sell outclassed</button></div>`;
  h+=S.bag.length?`<div class="grid5">${S.bag.slice().sort((a,b)=>b.r-a.r||iscore(b)-iscore(a)).map(itemBtn).join("")}</div>`:`<div class="hint">Your bag is empty. Monsters carry loot. Don't ask where.</div>`;
  h+=`<div class="sec">Equipped</div>`;
  h+=S.dep.map(k=>{const hr=S.heroes[k];return`<div class="hcard"><div class="hrow2"><div class="av" data-act="hero" data-k="${k}">${heroPortrait(k)}</div><div class="mi"><b>${CLS[k].hero}</b><small>Tap a piece to enhance it instantly</small></div></div><div class="slots6">${SLOTS.map(sl=>{const it=hr.gear[sl];if(!it)return`<button class="item empty" data-act="emptySlot" data-k="${k}" data-s="${sl}"><i>${slotArt(sl)}</i><small>${SLOT_N[sl]}</small></button>`;const c=enhCost(it);return`<button class="item ${S.gold>=c&&it.lv<20?"can":""}" style="--rc:${RAR[it.r].c}" data-act="enhQ" data-id="${it.id}" data-cost="${c}"><i>${itemArt(it)}</i><b>+${it.lv}</b><small>${it.lv>=20?"MAX":"⬆ "+fmt(c)}</small></button>`}).join("")}</div></div>`}).join("");
- return pageHeading("The Relic Vault","Enchanted keepsakes from a hundred unfinished tales.",1)+h+`<div class="hint">Auto-equip puts upgrades on whichever deployed hero benefits most. Toggle it in Settings.</div>`;
+ return pageHeading("The Relic Vault","Enchanted keepsakes from a hundred unfinished tales.",1)+h+`<div class="hint">Chests contain fewer relics. Auto-sell also rejects duplicate upgrades already beaten by an item in your bag. Attack, health and gold bonuses have diminishing returns when stacked. Toggle auto-equip and auto-sell in Settings.</div>`;
 }
-ACT.sellJunk=()=>{let g=0,n=0;S.bag=S.bag.filter(b=>{if(b.r<=1&&!S.dep.some(k=>iscore(b)>iscore(S.heroes[k].gear[b.slot]))){g+=sellVal(b);n++;return false}return true});S.gold+=g;S.stats.sold+=n;toast("Sold "+n+" items for "+fmt(g)+" gold","good");AU.play("coin");renderTab()};
+ACT.sellJunk=()=>{const sold=sellOutclassedLoot();toast('Sold '+sold.count+' outclassed items for '+fmt(sold.gold)+' gold','good');AU.play('coin');renderTab();};
 function statLines(it){let h="";for(const k in it.st){const v=it.st[k]*(1+0.08*it.lv)*100;h+=`<div class="srow"><span>${STAT_N[k]}</span><b>+${k==="atk"||k==="hp"?fmt(v)+"%":v.toFixed(1)+"%"}</b></div>`}return h}
 function openItem(id){
  const f=findItem(id);if(!f){closeModal();return}const it=f.it,r=RAR[it.r],ec=enhCost(it);
  let eq="";
- if(f.loc==="bag"){eq=S.dep.map(k=>{const cur=S.heroes[k].gear[it.slot],dl=iscore(it)-iscore(cur);return`<button class="mini ${dl>0?"can":""}" data-act="equip" data-k="${k}" data-id="${id}">${CLS[k].e} ${dl>0?"▲":"▼"}</button>`}).join(" ")}
+ if(f.loc==="bag"){eq=S.dep.map(k=>{const cur=S.heroes[k].gear[it.slot],dl=iscore(it)-iscore(cur);return`<button class="mini ${dl>0?"can":""}" data-act="equip" data-k="${k}" data-id="${id}">${heroPortrait(k)} ${dl>0?"▲":"▼"}</button>`}).join(" ")}
  modal(`<div class="hdet"><div class="big">${itemArt(it)}</div><div class="mtitle" style="color:${r.c}">${it.name}</div><div class="msub">${r.n} ${SLOT_N[it.slot]}${it.lv?" · +"+it.lv:""} · ilvl ${it.ilvl+1}${f.loc==="hero"?" · on "+CLS[f.k].hero:""}</div></div>
- <div class="statbox">${statLines(it)}</div>
+ <div class="statbox">${statLines(it)}</div><div class="hint">These are the relic’s base bonuses. Stacked attack, health and gold bonuses have diminishing returns.</div>
  ${eq?`<div class="sec">Equip on</div><div style="display:flex;flex-wrap:wrap;gap:6px">${eq}</div>`:""}
  <div class="mbtns col">${it.lv<20?`<button class="btn ${S.gold>=ec?"gold":""}" data-act="enh" data-id="${id}">Enhance 🪙 ${fmt(ec)}</button>`:""}${f.loc==="hero"?`<button class="btn" data-act="unequip" data-k="${f.k}" data-s="${it.slot}">Unequip</button>`:`<button class="btn mg" data-act="sell" data-id="${id}">Sell 🪙 ${fmt(sellVal(it))}</button>`}<button class="btn ghost" data-act="close">Close</button></div>`);
 }
@@ -239,7 +239,7 @@ function showDefeatPrompt(){
  modal(`<div class="defeat-scene">${uiIcon(6)}<div class="mtitle">This chapter has fallen</div><p>Your company was overwhelmed at stage ${(R.defeatStage||0)+1}.</p>${R.defeatMultiplier>1?'<p class="dread-note">With no enemy falling for 15 seconds, dread strengthened their attacks to ×'+fmt(R.defeatMultiplier)+'.</p>':''}<p>Rewrite the tale and begin again with the strength of your Wishes, or retreat to regroup.</p></div><div class="mbtns col"><button class="btn gold" data-act="defeatRewrite">Rewrite the tale${reward?' · +'+reward+' Wishes':''}</button><button class="btn ghost" data-act="defeatRetreat">Retreat one stage</button></div>`,true);
 }
 ACT.defeatRetreat=()=>{if(!R.defeatPending)return;R.defeatPending=false;closeModal();S.stage=Math.max(0,S.stage-1);for(const h of R.team){h.down=false;h.hp=h.mhp*.7;}R.wipeT=0;startStage();saveGame();};
-ACT.defeatRewrite=()=>{if(!R.defeatPending)return;R.defeatPending=false;closeModal();if(canRestructure()){doRestructure();return;}for(const k in S.heroes)for(const slot in S.heroes[k].gear){const it=S.heroes[k].gear[slot];if(it)addBag(it);}const permanent={so:S.so,soTotal:S.soTotal,perks:S.perks,restructures:S.restructures};Object.assign(S,newCampState(S.camp),permanent);const launch=perk('elev')*5;S.stage=S.max=launch;S.gold=perk('sign')?100*Math.pow(4,perk('sign')):0;S.own[S.seat.van]=1;normS(S);R.buff={cry:0,gold:0,haste:0,ballad:0};R.cd={};R.wipeT=0;R.lastArea=-1;recalc();buildTeam();startStage();onAreaChanged();saveGame();};
+ACT.defeatRewrite=()=>{if(!R.defeatPending)return;R.defeatPending=false;closeModal();if(canRestructure()){doRestructure();return;}for(const k in S.heroes)for(const slot in S.heroes[k].gear){const it=S.heroes[k].gear[slot];if(it)addBag(it);}const permanent={so:S.so,soTotal:S.soTotal,perks:S.perks,restructures:S.restructures};Object.assign(S,newCampState(S.camp),permanent);const launch=perk('elev')*5;S.stage=S.max=launch;S.gold=perk('sign')?100*Math.pow(4,perk('sign')):0;S.own[S.seat.van]=1;normS(S);R.buff={cry:0,gold:0,haste:0,ballad:0};R.cd={};R.wipeT=0;R.lastArea=-1;R.lastClearedStage=null;R.team=[];recalc();buildTeam();startStage();onAreaChanged();saveGame();};
 
 /* ---------- More tab ---------- */
 function renderMore(){
@@ -255,7 +255,7 @@ function renderMore(){
 function openRestr(){
  const g=soGain(),can=canRestructure()&&g>=1;
  modal(`<div class="mtitle">📖 Rewrite the Tale</div><p class="mp">Close the book, begin the tale again, and earn <b>Wishes</b> based on your deepest stage. Each Wish permanently adds <b>+6% damage</b> and <b>+4% gold</b>. You keep your bag, pets and achievements. Equipped gear goes back in the bag.</p>
- <div class="statbox"><div class="srow"><span>Wishes available</span><b>${S.so} 📈</b></div><div class="srow"><span>Lifetime Wishes</span><b>${S.soTotal}</b></div><div class="srow"><span>Rewrites done</span><b>${S.restructures}</b></div><div class="srow"><span>Soft wall (enemies ramp up)</span><b>stage ~${Math.floor(wallStage())+1}</b></div><div class="srow"><span>Severe danger (estimate)</span><b>stage ${hardStage()+1}</b></div><div class="srow"><span>After this rewrite</span><b>wall ~${Math.floor(55+1.8*Math.sqrt(S.soTotal+g))+1}</b></div></div>
+ <div class="statbox"><div class="srow"><span>Wishes available</span><b>${S.so} 📈</b></div><div class="srow"><span>Lifetime Wishes</span><b>${S.soTotal}</b></div><div class="srow"><span>Rewrites done</span><b>${S.restructures}</b></div><div class="srow"><span>Soft wall (enemies ramp up)</span><b>stage ~${Math.floor(wallStage())+1}</b></div><div class="srow"><span>Hard wall (severe danger)</span><b>stage ${hardStage()+1}</b></div><div class="srow"><span>After this rewrite</span><b>wall ~${Math.floor(55+1.8*Math.sqrt(S.soTotal+g))+1}</b></div></div>
  <button class="btn mg wide" data-act="restrAsk" ${can?"":"disabled"}>${can?"Rewrite now: +"+g+" 📈":"Reach stage 21 to unlock"}</button>
  <div class="sec">Wish Shop</div>
  ${PERKS.map(p=>{const l=perk(p.id),maxed=l>=p.max,cost=Math.ceil(p.b*Math.pow(1.9,l));return`<div class="row"><div class="ico">${p.i}</div><div class="info"><b>${p.n}</b> <em>Lv ${l}</em><small>${p.d(l)}${maxed?"":" → "+p.d(l+1)}</small></div>${maxed?'<div class="maxed">MAX</div>':`<button class="buy ${S.so>=cost?"can":""}" data-act="perk" data-id="${p.id}"><span>BUY</span>📈 ${cost}</button>`}</div>`}).join("")}
@@ -272,17 +272,17 @@ ACT.quit=()=>confirmModal("Return to the title screen? Your progress is saved.",
 ACT.quitDo=()=>{saveGame();R.inGame=false;closeModal();$("#game").classList.add("hidden");$("#title").classList.remove("hidden");renderTitleMenu()};
 
 const HOWTO=`<div class="mtitle">❓ Storyteller's Handbook</div>
-<div class="how"><p><b>1. MARCH.</b> Your squad walks right. Monsters walk left. Melee heroes dash out to smack things, then return. Ranged heroes stay back and complain.</p>
+<div class="how"><p><b>1. MARCH.</b> Your squad walks right. Monsters walk left. Melee heroes advance into separate lanes and hold the front while attacking. Ranged heroes stay back and complain.</p>
 <p><b>2. TAP</b> the battlefield to smash the nearest monster. Use the <b>skill bar</b> for big spells.</p>
 <p><b>3. UPGRADE</b> heroes with one button: +1 level per press. Attack and Special grow on their own every few levels, every 10 levels is a milestone that boosts synergy and the whole party, and heroes evolve at Lv 25, 60 and 120 automatically. Your heroes auto-fight and auto-tap, so tapping is optional (but helps). Turn on the 🤖 Auto-Fairy once unlocked.</p><p><b>CAMPAIGNS.</b> Each campaign has 2000 stages and its own prestige. Reaching ~1200 takes serious synergy, gear and many restructures.</p>
 <p><b>4. FORMATION.</b> Your squad has 8 seats (Vanguard, Marksman, Bruiser, Support, Arcanist, Skirmisher, Commander, Wildcard). You start with the Vanguard; reach deeper stages and pay to unlock each seat's default hero. Every seat has 10 heroes, but only one sits there at a time.</p>
 <p><b>SYNERGY.</b> Every hero has tags and buffs allies with matching tags (🔗), and gets a bonus when the right ally is present (🤝). Mix and match seats to find combos.</p>
 <p><b>STALLED BATTLES</b> After 15 seconds of fighting without an enemy falling, Dread increases enemy damage by 30% each second. An enemy kill resets it. If the party falls, choose to Rewrite the tale or retreat and regroup.</p><p><b>RECRUITMENT EVENTS</b> open after 24 real hours from the start of your save. Earlier boss invitations wait until then. Afterward, weekly and boss events let you choose a traveller for their seat; gems can buy extra events.</p>
-<p><b>STAGES.</b> Every area is 10 stages: a ⚔️ <b>mini-boss on stage 5</b> and a 👑 <b>big boss on stage 10</b>. Both drop <b>chests</b> with gear for your whole squad, gold and a supply item. Only big bosses drop 💎 gems for the Gem Shop.</p>
+<p><b>STAGES.</b> Every area is 10 stages: a ⚔️ <b>mini-boss on stage 5</b> and a 👑 <b>big boss on stage 10</b>. Both drop <b>chests</b> with one relic from a mini-boss or two from a boss, plus gold and supplies. Only big bosses drop 💎 gems for the Gem Shop.</p>
 <p><b>5. GEAR</b> drops from monsters. Each hero has six slots: Weapon, Headgear, Armor, Trinket, Boots and Ring. Enhance them with gold.</p>
 <p><b>6. WEATHER</b> changes the battlefield. Fire hates rain, ice loves snow, and lightning is indiscriminate. Check the weather chip for details.</p>
 <p><b>7. PETS</b>: hatch eggs for fairytale familiars. <b>8. BOSSES</b> end each area. Wipe out and your squad retreats a stage to 'regroup'.</p>
-<p><b>9. REWRITE</b> at stage 21+ for permanent Wishes (+6% damage, +10% gold each). After about area 50 monsters get nasty. Rewrite the tale, come back stronger, push deeper.</p><p>Don't feed the Mimic. Don't eat the cottage.</p></div><div class="mbtns"><button class="btn" data-act="close">Once upon a time</button></div>`;
+<p><b>9. REWRITE</b> at stage 21+ for permanent Wishes (+6% damage, +10% gold each). Enemy damage rises through the soft wall; deeper into the hard-wall region, healing weakens and fallen heroes need a successful advance or a resurrection skill. Rewrite the tale, come back stronger, push deeper.</p><p>Don't feed the Mimic. Don't eat the cottage.</p></div><div class="mbtns"><button class="btn" data-act="close">Once upon a time</button></div>`;
 ACT.howto=()=>{AU.play("ui");modal(HOWTO)};
 ACT.credits=()=>{AU.play("ui");modal(`<div class="mtitle">🎬 Credits</div><div class="how"><p><b>GRIMM DESCENT</b><br>A Dark Fairy Tale</p><p>Created by <b>Tim</b><br>Built with Claude</p><p>No heroes were harmed. Several were fainted at.</p><p>Any resemblance to your childhood bedtime stories is entirely intentional.</p></div><div class="mbtns"><button class="btn" data-act="close">Close</button></div>`)};
 function toggles(){const T=[["music","🎵 Music"],["sfx","🔊 Sound effects"],["shake","📳 Screen shake"],["numbers","🔢 Damage numbers"],["vibe","📱 Vibration"],["autoequip","🛡️ Auto-equip upgrades"],["autosell","💰 Auto-sell worse loot"]];
@@ -400,5 +400,7 @@ ACT.buyUtil=d=>{const c=utilPrice(d.id);if(S.gold<c){AU.play("err");return}S.gol
 ACT.useUtil=d=>{const r=useUtil(d.id);if(!r){AU.play("err");return}AU.play("level");if(d.id==="egg")eggModal(r);else{toast("Used "+UTILS.find(u=>u.id===d.id).n,"good");renderTab()}};
 ACT.buyGem=d=>{if(d.id==="gpick"&&!recruitReady()){toast("The guild opens in "+fmtTime(recruitWait()/1000)+". Your gems have been kept.","memo");return;}const r=buyGem(d.id);if(!r){AU.play("err");return}AU.play("level");
  if(r.chest)chestModal(r.chest,"Gilded Chest!");else if(r.egg)eggModal(r.egg);else{if(r.gold)toast("⏩ +"+fmt(r.gold)+" gold","good");renderTab()}};
+
+
 
 

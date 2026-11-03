@@ -386,3 +386,5 @@ button{border-radius:5px}
 
 /* Individual Stage 9 campaign scenes. */
 .campaign-world-art{background-size:cover;background-position:center 40%}
+
+#wxChip{display:flex;align-items:center;gap:6px;background:#0b1a18e8;border-color:#b99c5e66;color:#d9c492}.weather-mark{width:17px;height:17px;flex:none}

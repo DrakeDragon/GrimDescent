@@ -60,7 +60,7 @@ const syncDep=()=>{S.dep=SLOT_ORDER.filter(id=>S.seat[id]).map(id=>S.seat[id])};
 
 /* ---------- computed stats ---------- */
 let C={h:{},pet:{gold:0,spd:0,crit:0,umb:0},umb:0,disc:1,cdr:0,bossM:1,lootq:1};
-function gearOf(h){const t={atk:0,spd:0,hp:0,crit:0,gold:0};for(const s in h.gear){const it=h.gear[s];if(!it)continue;for(const k in it.st)t[k]+=it.st[k]*(1+0.08*it.lv)*(1+0.1*perk("gearp"))}return t}
+function gearOf(h){const t={atk:0,spd:0,hp:0,crit:0,gold:0};for(const s in h.gear){const it=h.gear[s];if(!it)continue;for(const k in it.st)t[k]+=it.st[k]*(1+0.08*it.lv)*(1+0.1*perk("gearp"))}for(const stat of ["atk","hp","gold"]){const cap=stat==="atk"?4:2;t[stat]=cap*t[stat]/(cap+t[stat]);}return t}
 function petBonus(){const b={gold:0,spd:0,crit:0,umb:0};
  for(const id of S.petAct){const p=PETS.find(x=>x.id===id),pl=S.pets[id];if(!p||!pl)continue;const l=pl.lvl;
   if(p.type==="gold")b.gold+=p.v*l;else if(p.type==="spd")b.spd+=p.v*l;else if(p.type==="crit")b.crit+=p.v*l;else if(p.type==="umb")b.umb+=p.v*l;else if(p.type==="all"){b.gold+=.1*l;b.spd+=.03*l;b.crit+=.01*l}}return b}
@@ -150,7 +150,7 @@ function switchCamp(c){
  if(c===S.camp||!CAMPS[c]||!campUnlocked(c))return false;
  S.campBest[S.camp]=Math.max(S.campBest[S.camp]||0,S.max);S.camps[S.camp]=JSON.parse(JSON.stringify(snapCamp()));
  const st=S.camps[c]||newCampState(c);delete S.camps[c];S.camp=c;Object.assign(S,JSON.parse(JSON.stringify(st)));S.own[S.seat.van]=1;normS(S);
- R.buff={cry:0,gold:0,haste:0};R.cd={};R.lastArea=-1;R.mapBase=null;recalc();buildTeam();startStage();onAreaChanged();saveGame();return true}
+ R.buff={cry:0,gold:0,haste:0};R.cd={};R.lastArea=-1;R.mapBase=null;R.team=[];R.lastClearedStage=null;R.wipeT=0;R.defeatPending=false;recalc();buildTeam();startStage();onAreaChanged();saveGame();return true}
 function newCampState(c){const n=newState(),o={};for(const f of CAMP_F)o[f]=n[f];const v=campHero('van',c||0);o.heroes={[v]:newHero()};o.seat={van:v};o.dep=[v];return o}
 function autoManage(){
  if(!S.autoMgr||S.max<10||!R.inGame||R.modalPause)return;
@@ -237,10 +237,12 @@ function dropLoot(boss){
  gainItem(it);
 }
 function bestHeroFor(it){let best=null,bs=0;for(const k of S.dep){const d=iscore(it)-iscore(S.heroes[k].gear[it.slot]);if(d>bs){bs=d;best=k}}return best}
+function worthwhileLoot(it){return S.dep.some(k=>{const h=S.heroes[k];if(!h)return false;const best=Math.max(iscore(h.gear[it.slot]),...S.bag.filter(b=>b.slot===it.slot).map(iscore));return iscore(it)>best;});}
+function sellOutclassedLoot(){let gold=0,count=0;S.bag=S.bag.filter(it=>{if(bestHeroFor(it))return true;gold+=sellVal(it);count++;return false;});S.gold+=gold;S.stats.sold+=count;return{gold,count};}
 function gainItem(it){
  if(S.set.autoequip){const k=bestHeroFor(it);if(k){const h=S.heroes[k],cur=h.gear[it.slot];h.gear[it.slot]=it;recalc();
   if(cur){if(S.set.autosell){S.gold+=sellVal(cur);S.stats.sold++}else addBag(cur)}refreshTab("heroes");refreshTab("gear");return}}
- if(S.set.autosell&&!bestHeroFor(it)){S.gold+=sellVal(it);S.stats.sold++;return}
+ if(S.set.autosell&&!worthwhileLoot(it)){S.gold+=sellVal(it);S.stats.sold++;return}
  addBag(it);refreshTab("gear");
 }
 function addBag(it){
@@ -296,7 +298,7 @@ function doRestructure(){
  for(const k in S.heroes)for(const s in S.heroes[k].gear){const it=S.heroes[k].gear[s];if(it)addBag(it)}
  S.so+=g;S.soTotal+=g;S.restructures++;S.gold=perk("sign")?100*Math.pow(4,perk("sign")):0;S.runGold=0;S.up={};S.sk={};
  S.dep=[];S.heroes={};S.seat={van:campHero('van')};S.own[S.seat.van]=1;ensureHero(S.seat.van);syncDep();S.shopN=0;
- const st=perk("elev")*5;S.stage=st;S.max=st;S.auto=true;R.buff={cry:0,gold:0,haste:0};R.cd={};R.lastArea=-1;
+ const st=perk("elev")*5;S.stage=st;S.max=st;S.auto=true;R.team=[];R.lastClearedStage=null;R.wipeT=0;R.defeatPending=false;R.buff={cry:0,gold:0,haste:0};R.cd={};R.lastArea=-1;
  recalc();buildTeam();startStage();onAreaChanged();saveGame();return true;
 }
 function offlineGain(sec){
@@ -323,8 +325,8 @@ function applyOffline(o){
 
 /* ---------- chests, supplies, shops ---------- */
 function genChest(type,g){
- const boss=type!=="mini",n=Math.max(1,S.dep.length)+(type==="boss"?1:0)+(type==="premium"?2:0);
- const minR=type==="premium"?4:type==="boss"?3:2,items=[];
+ const boss=type!=="mini",n=type==="premium"?3:type==="boss"?2:1;
+ const minR=type==="premium"?4:type==="boss"?2:1,items=[];
  for(let i=0;i<n;i++)items.push(genItem(g,boss,minR));
  const gold=Math.floor(floorHP(g)*C.goldBase*(type==="mini"?6:type==="boss"?18:35));
  const u=pick(UTILS),pt=pick(Object.keys(POTS));
@@ -360,3 +362,4 @@ function buyGem(id){
  if(id==="gso"){S.so+=8;S.soTotal+=8;recalc();return{ok:1}}
  S.gemUp[id]=l+1;recalc();return{ok:1};
 }
+
